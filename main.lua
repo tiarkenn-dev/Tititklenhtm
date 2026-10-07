@@ -1,6 +1,7 @@
 -- =========================================================
 -- ONE W v4 - GOLD PREMIUM HUB + MUSIC
 -- FULL REWRITE - ALL PATCHES APPLIED
+-- THEME: DIAMOND BLUE (BIRU KINCLONG)
 -- =========================================================
 
 -- =========================================================
@@ -23,6 +24,7 @@ TeleportService = game:GetService("TeleportService")
 LP = Players.LocalPlayer
 PG = LP:WaitForChild("PlayerGui")
 
+-- GAMBAR ID YANG DIPAKAI
 IMAGE_ID = "rbxassetid://138040631725974"
 STUN_SOUND_ID = "rbxassetid://131869004949152"
 STUN_ANIM_ID = "123047897844134"
@@ -33,21 +35,36 @@ function getRoot()
     return c and c:FindFirstChild("HumanoidRootPart")
 end
 
+-- =========================================================
+-- THEME: DIAMOND BLUE (BIRU KINCLONG)
+-- =========================================================
 C = {
-    BG = Color3.fromRGB(15, 12, 5),
-    BG2 = Color3.fromRGB(25, 20, 8),
-    PANEL = Color3.fromRGB(40, 32, 12),
-    PANEL2 = Color3.fromRGB(55, 45, 18),
+    -- BACKGROUND (BIRU DIAMOND)
+    BG = Color3.fromRGB(10, 20, 45),          -- background panel utama (biru tua)
+    BG2 = Color3.fromRGB(15, 30, 65),         -- background kolom kiri-kanan
+    PANEL = Color3.fromRGB(20, 45, 95),       -- panel header
+    PANEL2 = Color3.fromRGB(30, 60, 130),     -- panel tombol
+    
+    -- AKSEN GOLD (tetap, biar kontras sama biru)
     GOLD = Color3.fromRGB(255, 210, 80),
     GOLD_LIGHT = Color3.fromRGB(255, 230, 120),
     GOLD_DARK = Color3.fromRGB(200, 160, 50),
     ORANGE = Color3.fromRGB(255, 180, 60),
-    TXT = Color3.fromRGB(255, 245, 220),
-    DIM = Color3.fromRGB(180, 150, 80),
+    
+    -- TEXT
+    TXT = Color3.fromRGB(230, 245, 255),      -- text putih kebiruan
+    DIM = Color3.fromRGB(150, 190, 230),      -- text dim biru muda
+    
+    -- STATUS
     GRN = Color3.fromRGB(80, 255, 150),
     RED = Color3.fromRGB(255, 70, 100),
-    CYAN = Color3.fromRGB(80, 240, 255),
+    CYAN = Color3.fromRGB(120, 220, 255),     -- aksen biru kinclong
 }
+
+-- WARNA BIRU DIAMOND UNTUK SHIMMER
+DIAMOND_BLUE = Color3.fromRGB(120, 200, 255)
+DIAMOND_LIGHT = Color3.fromRGB(180, 230, 255)
+DIAMOND_DARK = Color3.fromRGB(40, 100, 180)
 
 function rnd(o, r)
     local c = Instance.new("UICorner")
@@ -83,7 +100,7 @@ function playToggleSound()
 end
 
 -- =========================================================
--- LOADING GALAXY + GAMBAR
+-- LOADING SCREEN BARU (BIRU DIAMOND + GAMBAR ID LU + SHIMMER)
 -- =========================================================
 local loadingGui = Instance.new("ScreenGui")
 loadingGui.Name = "OneWLoading"
@@ -92,141 +109,75 @@ loadingGui.IgnoreGuiInset = true
 loadingGui.DisplayOrder = 999999
 loadingGui.Parent = PG
 
+-- BACKGROUND BIRU DIAMOND
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.fromRGB(8, 6, 2)
+bg.BackgroundColor3 = Color3.fromRGB(5, 12, 30)
 bg.BorderSizePixel = 0
 bg.Parent = loadingGui
 
-local nebula = Instance.new("Frame")
-nebula.Size = UDim2.new(1, 0, 1, 0)
-nebula.BackgroundColor3 = Color3.fromRGB(35, 25, 5)
-nebula.BorderSizePixel = 0
-nebula.BackgroundTransparency = 0.3
-nebula.Parent = bg
-
-local nebulaGrad = Instance.new("UIGradient")
-nebulaGrad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(180, 130, 20)),
-    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(60, 45, 10)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 200, 80)),
-    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(80, 60, 15)),
-    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(200, 150, 30)),
+-- GRADIENT BIRU BERGERAK (KINCLONG)
+local bgGradient = Instance.new("UIGradient")
+bgGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(10, 25, 60)),
+    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(30, 70, 140)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(80, 160, 240)),
+    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(30, 70, 140)),
+    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(10, 25, 60)),
 })
-nebulaGrad.Rotation = 45
-nebulaGrad.Parent = nebula
+bgGradient.Rotation = 45
+bgGradient.Parent = bg
 
 task.spawn(function()
     local t = 0
-    while nebula.Parent do
-        t = t + 0.005
-        nebulaGrad.Rotation = (t * 20) % 360
-        task.wait(0.08)
+    while bgGradient.Parent do
+        t = t + 0.8
+        bgGradient.Rotation = (t) % 360
+        task.wait(0.05)
     end
 end)
 
-local starContainer = Instance.new("Frame")
-starContainer.Size = UDim2.new(1, 0, 1, 0)
-starContainer.BackgroundTransparency = 1
-starContainer.Parent = bg
-
-local stars = {}
-for i = 1, 20 do
-    local star = Instance.new("Frame")
-    star.Size = UDim2.new(0, math.random(2, 4), 0, math.random(2, 4))
-    star.Position = UDim2.new(math.random(), 0, math.random(), 0)
-    star.BackgroundColor3 = Color3.fromRGB(math.random(220, 255), math.random(180, 220), math.random(80, 150))
-    star.BorderSizePixel = 0
-    star.BackgroundTransparency = math.random(20, 60) / 100
-    star.Parent = starContainer
-    rnd(star, 999)
-    table.insert(stars, {
-        obj = star,
-        speed = math.random(10, 40) / 10000,
-        twinkle = math.random() * math.pi * 2
-    })
-end
+-- SHIMMER EFFECT (KILAU BERGERAK DI BACKGROUND)
+local bgShimmer = Instance.new("ImageLabel")
+bgShimmer.Name = "LoadingShimmer"
+bgShimmer.Size = UDim2.new(0, 400, 1.5, 0)
+bgShimmer.Position = UDim2.new(0, -400, 0, 0)
+bgShimmer.BackgroundTransparency = 1
+bgShimmer.Image = "rbxassetid://5028857084"
+bgShimmer.ImageColor3 = Color3.fromRGB(150, 220, 255)
+bgShimmer.ImageTransparency = 0.7
+bgShimmer.ZIndex = 1
+bgShimmer.Parent = bg
 
 task.spawn(function()
-    while starContainer.Parent do
-        for _, s in ipairs(stars) do
-            if s.obj and s.obj.Parent then
-                local p = s.obj.Position
-                local newY = p.Y.Scale + s.speed
-                if newY > 1 then
-                    newY = 0
-                    s.obj.Position = UDim2.new(math.random(), 0, 0, 0)
-                else
-                    s.obj.Position = UDim2.new(p.X.Scale, 0, newY, 0)
-                end
-                s.twinkle = s.twinkle + 0.1
-                s.obj.BackgroundTransparency = 0.4 + math.sin(s.twinkle) * 0.3
-            end
-        end
-        task.wait(0.12)
+    while bgShimmer.Parent do
+        bgShimmer.Position = UDim2.new(0, -400, 0, 0)
+        TweenService:Create(bgShimmer, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {
+            Position = UDim2.new(1, 100, 0, 0)
+        }):Play()
+        task.wait(3)
     end
 end)
 
-local galaxyHolder = Instance.new("Frame")
-galaxyHolder.Size = UDim2.new(0, 400, 0, 400)
-galaxyHolder.Position = UDim2.new(0.5, -200, 0.5, -200)
-galaxyHolder.BackgroundTransparency = 1
-galaxyHolder.Parent = bg
-
-local spiral1 = Instance.new("Frame")
-spiral1.Size = UDim2.new(0, 300, 0, 300)
-spiral1.Position = UDim2.new(0.5, -150, 0.5, -150)
-spiral1.BackgroundTransparency = 1
-spiral1.Parent = galaxyHolder
-
-local spiral1Stroke = Instance.new("UIStroke")
-spiral1Stroke.Thickness = 60
-spiral1Stroke.Transparency = 0.85
-spiral1Stroke.Color = Color3.fromRGB(255, 210, 80)
-spiral1Stroke.Parent = spiral1
-rnd(spiral1, 999)
-
-local spiral2 = Instance.new("Frame")
-spiral2.Size = UDim2.new(0, 260, 0, 260)
-spiral2.Position = UDim2.new(0.5, -130, 0.5, -130)
-spiral2.BackgroundTransparency = 1
-spiral2.Parent = galaxyHolder
-
-local spiral2Stroke = Instance.new("UIStroke")
-spiral2Stroke.Thickness = 40
-spiral2Stroke.Transparency = 0.88
-spiral2Stroke.Color = Color3.fromRGB(255, 240, 160)
-spiral2Stroke.Parent = spiral2
-rnd(spiral2, 999)
-
-task.spawn(function()
-    local t = 0
-    while galaxyHolder.Parent do
-        t = t + 1
-        spiral1.Rotation = t * 0.8
-        spiral2.Rotation = -t * 1.1
-        task.wait(0.08)
-    end
-end)
-
--- GAMBAR DI LOADING
+-- GLOW DI BELAKANG GAMBAR
 local logoGlow = Instance.new("ImageLabel")
-logoGlow.Size = UDim2.new(0, 200, 0, 200)
-logoGlow.Position = UDim2.new(0.5, -100, 0.35, -100)
+logoGlow.Size = UDim2.new(0, 220, 0, 220)
+logoGlow.Position = UDim2.new(0.5, -110, 0.32, -110)
 logoGlow.BackgroundTransparency = 1
 logoGlow.Image = "rbxassetid://5028857084"
-logoGlow.ImageColor3 = Color3.fromRGB(255, 210, 80)
+logoGlow.ImageColor3 = Color3.fromRGB(120, 200, 255)
 logoGlow.ImageTransparency = 1
-logoGlow.ZIndex = 0
+logoGlow.ZIndex = 2
 logoGlow.Parent = bg
 
+-- GAMBAR ID LU DI TENGAH
 local logoLoading = Instance.new("ImageLabel")
-logoLoading.Size = UDim2.new(0, 120, 0, 120)
-logoLoading.Position = UDim2.new(0.5, -60, 0.35, -60)
+logoLoading.Size = UDim2.new(0, 140, 0, 140)
+logoLoading.Position = UDim2.new(0.5, -70, 0.32, -70)
 logoLoading.BackgroundTransparency = 1
 logoLoading.Image = IMAGE_ID
 logoLoading.ImageTransparency = 1
-logoLoading.ZIndex = 1
+logoLoading.ZIndex = 3
 logoLoading.Parent = bg
 
 task.delay(0.3, function()
@@ -234,38 +185,41 @@ task.delay(0.3, function()
         ImageTransparency = 0
     }):Play()
     TweenService:Create(logoGlow, TweenInfo.new(0.8), {
-        ImageTransparency = 0.6
+        ImageTransparency = 0.5
     }):Play()
 end)
 
+-- GLOW PULSE
 task.spawn(function()
     local t = 0
     while logoGlow.Parent do
         t = t + 0.05
-        local sz = 200 + math.sin(t * 2) * 15
+        local sz = 220 + math.sin(t * 2) * 20
         logoGlow.Size = UDim2.new(0, sz, 0, sz)
-        logoGlow.Position = UDim2.new(0.5, -sz / 2, 0.35, -sz / 2)
+        logoGlow.Position = UDim2.new(0.5, -sz / 2, 0.32, -sz / 2)
         task.wait(0.05)
     end
 end)
 
+-- TULISAN "ONE W"
 local welcomeTitle = Instance.new("TextLabel")
 welcomeTitle.Size = UDim2.new(1, 0, 0, 60)
-welcomeTitle.Position = UDim2.new(0, 0, 0.55, 0)
+welcomeTitle.Position = UDim2.new(0, 0, 0.52, 0)
 welcomeTitle.BackgroundTransparency = 1
 welcomeTitle.Text = "ONE W"
 welcomeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 welcomeTitle.TextSize = 0
 welcomeTitle.Font = Enum.Font.GothamBlack
 welcomeTitle.TextStrokeTransparency = 0.4
-welcomeTitle.TextStrokeColor3 = Color3.fromRGB(255, 210, 80)
+welcomeTitle.TextStrokeColor3 = Color3.fromRGB(120, 200, 255)
+welcomeTitle.ZIndex = 3
 welcomeTitle.Parent = bg
 
 local titleGrad = Instance.new("UIGradient")
 titleGrad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 240, 160)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 180, 60)),
-    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 240, 160)),
+    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(180, 230, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120, 200, 255)),
+    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(180, 230, 255)),
 })
 titleGrad.Parent = welcomeTitle
 
@@ -282,45 +236,63 @@ TweenService:Create(welcomeTitle, TweenInfo.new(1.2, Enum.EasingStyle.Back), {
     TextSize = 52, TextTransparency = 0
 }):Play()
 
+-- SUBTITLE
 local subtitle = Instance.new("TextLabel")
 subtitle.Size = UDim2.new(1, 0, 0, 24)
-subtitle.Position = UDim2.new(0, 0, 0.62, 0)
+subtitle.Position = UDim2.new(0, 0, 0.60, 0)
 subtitle.BackgroundTransparency = 1
 subtitle.Text = "L O A D I N G"
-subtitle.TextColor3 = Color3.fromRGB(255, 230, 160)
+subtitle.TextColor3 = Color3.fromRGB(180, 230, 255)
 subtitle.TextSize = 14
 subtitle.Font = Enum.Font.GothamBold
 subtitle.TextStrokeTransparency = 0.5
-subtitle.TextStrokeColor3 = Color3.fromRGB(180, 120, 20)
+subtitle.TextStrokeColor3 = Color3.fromRGB(20, 60, 120)
 subtitle.TextTransparency = 1
+subtitle.ZIndex = 3
 subtitle.Parent = bg
 
 TweenService:Create(subtitle, TweenInfo.new(1), {TextTransparency = 0}):Play()
 
+-- PROGRESS BAR
 local barBg = Instance.new("Frame")
 barBg.Size = UDim2.new(0, 320, 0, 4)
 barBg.Position = UDim2.new(0.5, -160, 0.68, 0)
-barBg.BackgroundColor3 = Color3.fromRGB(50, 35, 10)
+barBg.BackgroundColor3 = Color3.fromRGB(20, 40, 80)
 barBg.BorderSizePixel = 0
-barBg.BackgroundTransparency = 0.4
+barBg.BackgroundTransparency = 0.3
+barBg.ZIndex = 3
 barBg.Parent = bg
 rnd(barBg, 999)
 
+local barStroke = Instance.new("UIStroke")
+barStroke.Color = Color3.fromRGB(120, 200, 255)
+barStroke.Thickness = 1
+barStroke.Transparency = 0.3
+barStroke.Parent = barBg
+
 local barFill = Instance.new("Frame")
 barFill.Size = UDim2.new(0, 0, 1, 0)
-barFill.BackgroundColor3 = Color3.fromRGB(255, 210, 80)
+barFill.BackgroundColor3 = Color3.fromRGB(120, 200, 255)
 barFill.BorderSizePixel = 0
 barFill.Parent = barBg
 rnd(barFill, 999)
+
+local barFillGrad = Instance.new("UIGradient")
+barFillGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(180, 230, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120, 200, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 140, 220)),
+})
+barFillGrad.Parent = barFill
 
 TweenService:Create(barFill, TweenInfo.new(1.4, Enum.EasingStyle.Quad), {
     Size = UDim2.new(1, 0, 1, 0)
 }):Play()
 
+-- CLEANUP LOADING
 task.delay(1.6, function()
     if not loadingGui then return end
     TweenService:Create(bg, TweenInfo.new(0.6), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(nebula, TweenInfo.new(0.6), {BackgroundTransparency = 1}):Play()
     TweenService:Create(welcomeTitle, TweenInfo.new(0.5), {TextTransparency = 1, TextStrokeTransparency = 1}):Play()
     TweenService:Create(subtitle, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
     TweenService:Create(barBg, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
@@ -330,12 +302,15 @@ task.delay(1.6, function()
     if logoGlow then
         TweenService:Create(logoGlow, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
     end
+    if bgShimmer then
+        TweenService:Create(bgShimmer, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
+    end
     task.wait(0.8)
     if loadingGui then loadingGui:Destroy() end
 end)
 
 -- =========================================================
--- STATE
+-- STATE (SEMUA FITUR ASLI LU - TETAP UTUH)
 -- =========================================================
 _G.RoooorS = _G.RoooorS or {
     FireOn = false, FireType = "CosmicFire", FireSize = 5,
@@ -459,6 +434,9 @@ StunIndicator = _G.Roooor_StunIndicator or {
 }
 _G.Roooor_StunIndicator = StunIndicator
 
+-- =========================================================
+-- PLAYLIST MUSIC (SEMUA LAGU LU - TETAP UTUH)
+-- =========================================================
 Bombax = _G.Roooor_Bombax or {
     DaftarLagu = {
         {id = "101985596918228", judul = "One"},
@@ -491,12 +469,13 @@ Bombax = _G.Roooor_Bombax or {
 _G.Roooor_Bombax = Bombax
 
 print("✅ [1/15] Loading + Config + State Loaded")
-print("   Playlist Music: " .. #Bombax.DaftarLagu .. " lagu")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")
+print("   Playlist Music: " .. #Bombax.DaftarLagu .. " lagu")-- =========================================================
 -- SECTION 2/15 : FIRE + SKY + KILLERANIMS + SKIPANIMS + GRAFIK
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- ============ FIRE LIST (60 efek) ============
 FireList = {
     "Classic","HellFire","IceFire","ToxicFire","VoidFire",
     "GoldenKing","SakuraFire","EmeraldFire","BloodFire","ShadowFire",
@@ -581,6 +560,7 @@ for _, name in ipairs(FireList) do
     end
 end
 
+-- ============ SKY LIST (18) ============
 SkyList = {
     "Default", "Sunset", "Night", "Space",
     "Alien", "Purple", "Galaxy", "Void",
@@ -609,6 +589,7 @@ SkyIds = {
     DeepSpace = { Bk = "rbxassetid://17817511804", Dn = "rbxassetid://17817520184", Ft = "rbxassetid://17817511804", Lf = "rbxassetid://17817511804", Rt = "rbxassetid://17817511804", Up = "rbxassetid://17817511804" },
 }
 
+-- ============ KILLERANIMS (23 ID) ============
 KillerAnims = {}
 for _, id in ipairs({
     "105374834496520","113255068724446","118907603246885","129784271201071",
@@ -621,12 +602,40 @@ for _, id in ipairs({
     KillerAnims["rbxassetid://"..id] = true
 end
 
+-- ============ SKIPANIMS ============
 SkipAnims = {
     ["112166042383605"] = "Break Pallet",
     ["123047897844134"] = "Stun",
     ["126965695851149"] = "WalkCrouch",
     ["135084204086504"] = "WalkCrouch Injured",
     ["127096285501517"] = "Parry Anim",
+}
+
+-- ============ GRAFIK PRESETS (16) ============
+GraphicPresets = {
+    ["Soft"] = { Brightness = 2.00, Exposure = 0.03, ShadowSoftness = 0.075, Ambient = Color3.fromRGB(42,45,52), OutdoorAmbient = Color3.fromRGB(130,138,155), AtmosphereDensity = 0.055, AtmosphereHaze = 0.025, AtmosphereGlare = 0.08, BloomIntensity = 0.12, BloomSize = 20, BloomThreshold = 0.96, Contrast = 0.18, Saturation = 0.08, ColorBrightness = 0.01, SunRaysIntensity = 0.06, SunRaysSpread = 0.75, DOFNear = 0.01, DOFFar = 0.02, DOFFocus = 45, DOFRadius = 40 },
+    ["Cinematic"] = { Brightness = 2.10, Exposure = 0.05, ShadowSoftness = 0.055, Ambient = Color3.fromRGB(32,35,42), OutdoorAmbient = Color3.fromRGB(125,132,150), AtmosphereDensity = 0.075, AtmosphereHaze = 0.045, AtmosphereGlare = 0.12, BloomIntensity = 0.18, BloomSize = 24, BloomThreshold = 0.92, Contrast = 0.24, Saturation = 0.10, ColorBrightness = 0.015, SunRaysIntensity = 0.085, SunRaysSpread = 0.72, DOFNear = 0.025, DOFFar = 0.045, DOFFocus = 45, DOFRadius = 35 },
+    ["Ultra Cinematic"] = { Brightness = 2.15, Exposure = 0.07, ShadowSoftness = 0.045, Ambient = Color3.fromRGB(30,32,40), OutdoorAmbient = Color3.fromRGB(135,142,160), AtmosphereDensity = 0.065, AtmosphereHaze = 0.035, AtmosphereGlare = 0.14, BloomIntensity = 0.22, BloomSize = 27, BloomThreshold = 0.89, Contrast = 0.27, Saturation = 0.13, ColorBrightness = 0.02, SunRaysIntensity = 0.10, SunRaysSpread = 0.70, DOFNear = 0.02, DOFFar = 0.04, DOFFocus = 44, DOFRadius = 34 },
+    ["Golden Hour"] = { Brightness = 2.20, Exposure = 0.08, ShadowSoftness = 0.065, Ambient = Color3.fromRGB(58,48,38), OutdoorAmbient = Color3.fromRGB(155,135,105), AtmosphereDensity = 0.07, AtmosphereHaze = 0.055, AtmosphereGlare = 0.16, BloomIntensity = 0.20, BloomSize = 26, BloomThreshold = 0.91, Contrast = 0.20, Saturation = 0.16, ColorBrightness = 0.025, SunRaysIntensity = 0.12, SunRaysSpread = 0.76, DOFNear = 0.015, DOFFar = 0.035, DOFFocus = 45, DOFRadius = 38 },
+    ["Night Cinema"] = { Brightness = 1.65, Exposure = -0.02, ShadowSoftness = 0.035, Ambient = Color3.fromRGB(20,25,38), OutdoorAmbient = Color3.fromRGB(65,78,110), AtmosphereDensity = 0.085, AtmosphereHaze = 0.065, AtmosphereGlare = 0.06, BloomIntensity = 0.15, BloomSize = 24, BloomThreshold = 0.86, Contrast = 0.30, Saturation = 0.08, ColorBrightness = -0.01, SunRaysIntensity = 0.04, SunRaysSpread = 0.70, DOFNear = 0.025, DOFFar = 0.05, DOFFocus = 48, DOFRadius = 32 },
+    ["Deep Shadow"] = { Brightness = 1.90, Exposure = 0.00, ShadowSoftness = 0.035, Ambient = Color3.fromRGB(25,28,35), OutdoorAmbient = Color3.fromRGB(105,112,130), AtmosphereDensity = 0.07, AtmosphereHaze = 0.04, AtmosphereGlare = 0.08, BloomIntensity = 0.14, BloomSize = 22, BloomThreshold = 0.94, Contrast = 0.30, Saturation = 0.08, ColorBrightness = 0.005, SunRaysIntensity = 0.07, SunRaysSpread = 0.74, DOFNear = 0.02, DOFFar = 0.035, DOFFocus = 48, DOFRadius = 34 },
+    ["Crystal"] = { Brightness = 2.35, Exposure = 0.10, ShadowSoftness = 0.065, Ambient = Color3.fromRGB(48,52,60), OutdoorAmbient = Color3.fromRGB(150,158,175), AtmosphereDensity = 0.035, AtmosphereHaze = 0.018, AtmosphereGlare = 0.10, BloomIntensity = 0.10, BloomSize = 18, BloomThreshold = 1.00, Contrast = 0.15, Saturation = 0.05, ColorBrightness = 0.025, SunRaysIntensity = 0.055, SunRaysSpread = 0.78, DOFNear = 0.01, DOFFar = 0.025, DOFFocus = 46, DOFRadius = 42 },
+    ["Dreamy"] = { Brightness = 2.10, Exposure = 0.06, ShadowSoftness = 0.09, Ambient = Color3.fromRGB(50,48,58), OutdoorAmbient = Color3.fromRGB(140,135,155), AtmosphereDensity = 0.10, AtmosphereHaze = 0.08, AtmosphereGlare = 0.13, BloomIntensity = 0.25, BloomSize = 30, BloomThreshold = 0.88, Contrast = 0.12, Saturation = 0.10, ColorBrightness = 0.025, SunRaysIntensity = 0.08, SunRaysSpread = 0.80, DOFNear = 0.03, DOFFar = 0.055, DOFFocus = 44, DOFRadius = 45 },
+    ["Vivid Cinema"] = { Brightness = 2.20, Exposure = 0.06, ShadowSoftness = 0.055, Ambient = Color3.fromRGB(35,40,45), OutdoorAmbient = Color3.fromRGB(135,145,160), AtmosphereDensity = 0.055, AtmosphereHaze = 0.025, AtmosphereGlare = 0.10, BloomIntensity = 0.18, BloomSize = 23, BloomThreshold = 0.91, Contrast = 0.28, Saturation = 0.22, ColorBrightness = 0.015, SunRaysIntensity = 0.09, SunRaysSpread = 0.73, DOFNear = 0.015, DOFFar = 0.035, DOFFocus = 45, DOFRadius = 36 },
+    ["Dark Cinema"] = { Brightness = 1.80, Exposure = -0.03, ShadowSoftness = 0.04, Ambient = Color3.fromRGB(18,20,26), OutdoorAmbient = Color3.fromRGB(88,92,110), AtmosphereDensity = 0.075, AtmosphereHaze = 0.05, AtmosphereGlare = 0.05, BloomIntensity = 0.12, BloomSize = 21, BloomThreshold = 0.95, Contrast = 0.34, Saturation = 0.04, ColorBrightness = -0.005, SunRaysIntensity = 0.04, SunRaysSpread = 0.70, DOFNear = 0.025, DOFFar = 0.045, DOFFocus = 48, DOFRadius = 30 },
+    ["Cloudy Soft"] = { Brightness = 2.00, Exposure = 0.02, ShadowSoftness = 0.10, Ambient = Color3.fromRGB(55,58,65), OutdoorAmbient = Color3.fromRGB(145,148,158), AtmosphereDensity = 0.11, AtmosphereHaze = 0.09, AtmosphereGlare = 0.07, BloomIntensity = 0.10, BloomSize = 20, BloomThreshold = 0.97, Contrast = 0.10, Saturation = 0.03, ColorBrightness = 0.01, SunRaysIntensity = 0.035, SunRaysSpread = 0.82, DOFNear = 0.025, DOFFar = 0.05, DOFFocus = 46, DOFRadius = 43 },
+    ["Film Look"] = { Brightness = 2.05, Exposure = 0.03, ShadowSoftness = 0.06, Ambient = Color3.fromRGB(40,40,42), OutdoorAmbient = Color3.fromRGB(125,125,130), AtmosphereDensity = 0.06, AtmosphereHaze = 0.035, AtmosphereGlare = 0.08, BloomIntensity = 0.09, BloomSize = 19, BloomThreshold = 0.98, Contrast = 0.30, Saturation = -0.02, ColorBrightness = 0.005, SunRaysIntensity = 0.065, SunRaysSpread = 0.74, DOFNear = 0.02, DOFFar = 0.04, DOFFocus = 45, DOFRadius = 37 },
+    ["Moonlight"] = { Brightness = 1.70, Exposure = -0.01, ShadowSoftness = 0.03, Ambient = Color3.fromRGB(22,28,45), OutdoorAmbient = Color3.fromRGB(70,88,125), AtmosphereDensity = 0.09, AtmosphereHaze = 0.07, AtmosphereGlare = 0.04, BloomIntensity = 0.17, BloomSize = 25, BloomThreshold = 0.85, Contrast = 0.25, Saturation = 0.06, ColorBrightness = 0.00, SunRaysIntensity = 0.03, SunRaysSpread = 0.68, DOFNear = 0.02, DOFFar = 0.045, DOFFocus = 49, DOFRadius = 34 },
+    ["Bright Cinema"] = { Brightness = 2.45, Exposure = 0.12, ShadowSoftness = 0.07, Ambient = Color3.fromRGB(52,55,62), OutdoorAmbient = Color3.fromRGB(165,170,185), AtmosphereDensity = 0.045, AtmosphereHaze = 0.025, AtmosphereGlare = 0.14, BloomIntensity = 0.16, BloomSize = 23, BloomThreshold = 0.95, Contrast = 0.18, Saturation = 0.09, ColorBrightness = 0.035, SunRaysIntensity = 0.10, SunRaysSpread = 0.78, DOFNear = 0.01, DOFFar = 0.025, DOFFocus = 45, DOFRadius = 40 },
+    ["Ultra Soft"] = { Brightness = 2.05, Exposure = 0.04, ShadowSoftness = 0.12, Ambient = Color3.fromRGB(58,60,68), OutdoorAmbient = Color3.fromRGB(145,148,160), AtmosphereDensity = 0.08, AtmosphereHaze = 0.065, AtmosphereGlare = 0.08, BloomIntensity = 0.08, BloomSize = 18, BloomThreshold = 1.00, Contrast = 0.08, Saturation = 0.04, ColorBrightness = 0.015, SunRaysIntensity = 0.045, SunRaysSpread = 0.82, DOFNear = 0.025, DOFFar = 0.055, DOFFocus = 45, DOFRadius = 46 },
+    ["Performance Cinema"] = { Brightness = 2.00, Exposure = 0.03, ShadowSoftness = 0.08, Ambient = Color3.fromRGB(40,43,50), OutdoorAmbient = Color3.fromRGB(125,132,148), AtmosphereDensity = 0.04, AtmosphereHaze = 0.02, AtmosphereGlare = 0.05, BloomIntensity = 0.07, BloomSize = 16, BloomThreshold = 1.00, Contrast = 0.14, Saturation = 0.06, ColorBrightness = 0.01, SunRaysIntensity = 0.035, SunRaysSpread = 0.75, DOFNear = 0, DOFFar = 0, DOFFocus = 45, DOFRadius = 30 },
+}
+
+GraphicPresetOrder = {
+    "Soft","Cinematic","Ultra Cinematic","Golden Hour","Night Cinema",
+    "Deep Shadow","Crystal","Dreamy","Vivid Cinema","Dark Cinema",
+    "Cloudy Soft","Film Look","Moonlight","Bright Cinema","Ultra Soft",
+    "Performance Cinema",
 }
 
 GraphicState = _G.Roooor_GraphicState or {
@@ -658,18 +667,17 @@ SharpBackup = {
 }
 
 print("✅ [2/15] Fire + Sky + KillerAnims + SkipAnims + Grafik Presets Loaded")
-print("   Fire: 60 | Sky: 18 | KillerAnims: 23 ID")
-
--- =========================================================
--- SECTION 3/15 : BOMBAX MUSIC PLAYER
+print("   Theme: DIAMOND BLUE")
+print("   Fire: 60 | Sky: 18 | KillerAnims: 23 ID | Grafik: 16 preset")-- =========================================================
+-- SECTION 3/15 : BOMBAX MUSIC PLAYER - THEME DIAMOND BLUE
 -- =========================================================
 
 local GN = {
-    GOLD_NOVA = Color3.fromRGB(255, 225, 80),
-    GOLD = Color3.fromRGB(255, 215, 0),
-    GOLD_LIGHT = Color3.fromRGB(255, 245, 170),
-    GOLD_DARK = Color3.fromRGB(200, 150, 20),
-    GOLD_MID = Color3.fromRGB(230, 180, 40),
+    DIAMOND_BLUE = Color3.fromRGB(120, 200, 255),
+    DIAMOND_LIGHT = Color3.fromRGB(180, 230, 255),
+    DIAMOND_DARK = Color3.fromRGB(40, 100, 180),
+    DIAMOND_MID = Color3.fromRGB(80, 160, 240),
+    BLUE_BG = Color3.fromRGB(10, 25, 60),
 }
 
 local bombaxMusic = Instance.new("Sound")
@@ -693,12 +701,13 @@ bombaxGui.DisplayOrder = 99998
 bombaxGui.Parent = PG
 _G.Roooor_BombaxGui = bombaxGui
 
+-- FRAME UTAMA (BIRU DIAMOND)
 local bFrame = Instance.new("Frame")
 bFrame.Name = "MainFrame"
 bFrame.Size = UDim2.new(0, 200, 0, 110)
 bFrame.Position = UDim2.new(0, 20, 0, 100)
-bFrame.BackgroundColor3 = GN.GOLD_MID
-bFrame.BackgroundTransparency = 0.25
+bFrame.BackgroundColor3 = GN.DIAMOND_MID
+bFrame.BackgroundTransparency = 0.15
 bFrame.BorderSizePixel = 0
 bFrame.Active = true
 bFrame.Draggable = true
@@ -708,34 +717,124 @@ local bCorner = Instance.new("UICorner")
 bCorner.CornerRadius = UDim.new(0, 14)
 bCorner.Parent = bFrame
 
+-- STROKE BIRU KINCLONG
 local bStroke = Instance.new("UIStroke")
-bStroke.Color = GN.GOLD_NOVA
+bStroke.Color = GN.DIAMOND_BLUE
 bStroke.Thickness = 2
+bStroke.Transparency = 0
 bStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 bStroke.Parent = bFrame
 
+-- GLOW BIRU
+local bGlow = Instance.new("UIStroke")
+bGlow.Color = GN.DIAMOND_LIGHT
+bGlow.Thickness = 8
+bGlow.Transparency = 0.7
+bGlow.Parent = bFrame
+
+-- GRADIENT BIRU BERGERAK
 local bGradient = Instance.new("UIGradient")
 bGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, GN.GOLD_LIGHT),
-    ColorSequenceKeypoint.new(0.3, GN.GOLD),
-    ColorSequenceKeypoint.new(0.6, GN.GOLD_DARK),
-    ColorSequenceKeypoint.new(1, GN.GOLD)
+    ColorSequenceKeypoint.new(0, GN.DIAMOND_DARK),
+    ColorSequenceKeypoint.new(0.3, GN.DIAMOND_BLUE),
+    ColorSequenceKeypoint.new(0.6, GN.DIAMOND_LIGHT),
+    ColorSequenceKeypoint.new(1, GN.DIAMOND_BLUE)
 }
 bGradient.Rotation = 45
 bGradient.Parent = bFrame
 
+task.spawn(function()
+    local t = 0
+    while bGradient.Parent do
+        t = t + 1
+        bGradient.Rotation = (t * 1.5) % 360
+        task.wait(0.05)
+    end
+end)
+
+-- SHIMMER (KILAU BERGERAK)
+local bShimmer = Instance.new("ImageLabel")
+bShimmer.Size = UDim2.new(0, 80, 1, 0)
+bShimmer.Position = UDim2.new(0, -80, 0, 0)
+bShimmer.BackgroundTransparency = 1
+bShimmer.Image = "rbxassetid://5028857084"
+bShimmer.ImageColor3 = GN.DIAMOND_LIGHT
+bShimmer.ImageTransparency = 0.3
+bShimmer.ZIndex = 2
+bShimmer.Parent = bFrame
+
+local bShimmerCorner = Instance.new("UICorner")
+bShimmerCorner.CornerRadius = UDim.new(0, 14)
+bShimmerCorner.Parent = bShimmer
+
+-- OVERLAY BIRU
+local bOverlay = Instance.new("Frame")
+bOverlay.Size = UDim2.new(1, 0, 1, 0)
+bOverlay.BackgroundColor3 = GN.DIAMOND_LIGHT
+bOverlay.BackgroundTransparency = 0.9
+bOverlay.BorderSizePixel = 0
+bOverlay.ZIndex = 1
+bOverlay.Parent = bFrame
+
+local bOverlayCorner = Instance.new("UICorner")
+bOverlayCorner.CornerRadius = UDim.new(0, 14)
+bOverlayCorner.Parent = bOverlay
+
+-- NEON LINE BIRU
+local bNeonLine = Instance.new("Frame")
+bNeonLine.Size = UDim2.new(1, -24, 0, 3)
+bNeonLine.Position = UDim2.new(0, 12, 0, 0)
+bNeonLine.BackgroundColor3 = GN.DIAMOND_LIGHT
+bNeonLine.BorderSizePixel = 0
+bNeonLine.ZIndex = 3
+bNeonLine.Parent = bFrame
+
+local bNeonLineCorner = Instance.new("UICorner")
+bNeonLineCorner.CornerRadius = UDim.new(0, 2)
+bNeonLineCorner.Parent = bNeonLine
+
+-- EQUALIZER ICON
+local bEqIcon = Instance.new("Frame")
+bEqIcon.Size = UDim2.new(0, 18, 0, 18)
+bEqIcon.Position = UDim2.new(0, 8, 0, 7)
+bEqIcon.BackgroundTransparency = 1
+bEqIcon.ZIndex = 4
+bEqIcon.Parent = bFrame
+
+local function makeBar(xPos, hScale, yPos)
+    local b = Instance.new("Frame")
+    b.Size = UDim2.new(0, 3, hScale, 0)
+    b.Position = UDim2.new(0, xPos, yPos, 0)
+    b.BackgroundColor3 = GN.DIAMOND_LIGHT
+    b.BorderSizePixel = 0
+    b.ZIndex = 4
+    b.Parent = bEqIcon
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(1, 0)
+    c.Parent = b
+    return b
+end
+
+local bBar1 = makeBar(0, 0.4, 0.6)
+local bBar2 = makeBar(5, 0.7, 0.3)
+local bBar3 = makeBar(10, 0.5, 0.5)
+
+-- TITLE BOMBAX
 local bTitleApp = Instance.new("TextLabel")
 bTitleApp.Size = UDim2.new(1, -60, 0, 14)
-bTitleApp.Position = UDim2.new(0, 8, 0, 9)
+bTitleApp.Position = UDim2.new(0, 32, 0, 9)
 bTitleApp.BackgroundTransparency = 1
 bTitleApp.Text = "BOMBAX"
-bTitleApp.TextColor3 = Color3.fromRGB(80, 50, 0)
+bTitleApp.TextColor3 = Color3.fromRGB(255, 255, 255)
 bTitleApp.Font = Enum.Font.GothamBold
 bTitleApp.TextScaled = true
 bTitleApp.TextXAlignment = Enum.TextXAlignment.Left
+bTitleApp.TextStrokeTransparency = 0.5
+bTitleApp.TextStrokeColor3 = GN.DIAMOND_DARK
 bTitleApp.ZIndex = 4
 bTitleApp.Parent = bFrame
 
+-- TOMBOL CLOSE
 local bToggle = Instance.new("TextButton")
 bToggle.Size = UDim2.new(0, 18, 0, 18)
 bToggle.Position = UDim2.new(1, -24, 0, 9)
@@ -751,6 +850,13 @@ local bToggleCorner = Instance.new("UICorner")
 bToggleCorner.CornerRadius = UDim.new(0, 5)
 bToggleCorner.Parent = bToggle
 
+local bToggleStroke = Instance.new("UIStroke")
+bToggleStroke.Color = GN.DIAMOND_LIGHT
+bToggleStroke.Thickness = 1
+bToggleStroke.Transparency = 0.3
+bToggleStroke.Parent = bToggle
+
+-- CONTAINER
 local bContainer = Instance.new("Frame")
 bContainer.Size = UDim2.new(1, 0, 1, -32)
 bContainer.Position = UDim2.new(0, 0, 0, 32)
@@ -763,10 +869,13 @@ bTitleLabel.Size = UDim2.new(1, -16, 0, 14)
 bTitleLabel.Position = UDim2.new(0, 8, 0, 0)
 bTitleLabel.BackgroundTransparency = 1
 bTitleLabel.Text = "Memuat..."
-bTitleLabel.TextColor3 = Color3.fromRGB(60, 40, 0)
+bTitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 bTitleLabel.Font = Enum.Font.GothamBold
 bTitleLabel.TextScaled = true
 bTitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+bTitleLabel.TextStrokeTransparency = 0.5
+bTitleLabel.TextStrokeColor3 = GN.DIAMOND_DARK
+bTitleLabel.ZIndex = 4
 bTitleLabel.Parent = bContainer
 
 local bStatusLabel = Instance.new("TextLabel")
@@ -774,10 +883,11 @@ bStatusLabel.Size = UDim2.new(1, -16, 0, 10)
 bStatusLabel.Position = UDim2.new(0, 8, 0, 14)
 bStatusLabel.BackgroundTransparency = 1
 bStatusLabel.Text = "● Berhenti"
-bStatusLabel.TextColor3 = Color3.fromRGB(80, 60, 20)
+bStatusLabel.TextColor3 = GN.DIAMOND_LIGHT
 bStatusLabel.Font = Enum.Font.Gotham
 bStatusLabel.TextScaled = true
 bStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+bStatusLabel.ZIndex = 4
 bStatusLabel.Parent = bContainer
 
 local bTimeLabel = Instance.new("TextLabel")
@@ -785,25 +895,38 @@ bTimeLabel.Size = UDim2.new(1, -16, 0, 8)
 bTimeLabel.Position = UDim2.new(0, 8, 0, 24)
 bTimeLabel.BackgroundTransparency = 1
 bTimeLabel.Text = "00:00 / 00:00"
-bTimeLabel.TextColor3 = Color3.fromRGB(80, 60, 20)
+bTimeLabel.TextColor3 = GN.DIAMOND_LIGHT
 bTimeLabel.Font = Enum.Font.Gotham
 bTimeLabel.TextScaled = true
 bTimeLabel.TextXAlignment = Enum.TextXAlignment.Left
+bTimeLabel.ZIndex = 4
 bTimeLabel.Parent = bContainer
 
+-- PROGRESS BAR
 local bProgressBg = Instance.new("Frame")
 bProgressBg.Size = UDim2.new(1, -16, 0, 3)
 bProgressBg.Position = UDim2.new(0, 8, 0, 34)
-bProgressBg.BackgroundColor3 = Color3.fromRGB(120, 90, 20)
+bProgressBg.BackgroundColor3 = Color3.fromRGB(20, 40, 80)
 bProgressBg.BorderSizePixel = 0
+bProgressBg.ZIndex = 4
 bProgressBg.Parent = bContainer
+
+local bProgressBgCorner = Instance.new("UICorner")
+bProgressBgCorner.CornerRadius = UDim.new(0, 2)
+bProgressBgCorner.Parent = bProgressBg
 
 local bProgressFill = Instance.new("Frame")
 bProgressFill.Size = UDim2.new(0, 0, 1, 0)
-bProgressFill.BackgroundColor3 = GN.GOLD_LIGHT
+bProgressFill.BackgroundColor3 = GN.DIAMOND_LIGHT
 bProgressFill.BorderSizePixel = 0
+bProgressFill.ZIndex = 4
 bProgressFill.Parent = bProgressBg
 
+local bProgressFillCorner = Instance.new("UICorner")
+bProgressFillCorner.CornerRadius = UDim.new(0, 2)
+bProgressFillCorner.Parent = bProgressFill
+
+-- TOMBOL-TOMBOL
 local function bBuatTombol(teks, posisiX, warna, ukuran)
     local t = Instance.new("TextButton")
     t.Size = UDim2.new(0, ukuran, 0, 22)
@@ -818,14 +941,19 @@ local function bBuatTombol(teks, posisiX, warna, ukuran)
     local c = Instance.new("UICorner")
     c.CornerRadius = UDim.new(0, 6)
     c.Parent = t
+    local s = Instance.new("UIStroke")
+    s.Color = GN.DIAMOND_LIGHT
+    s.Thickness = 1
+    s.Transparency = 0.3
+    s.Parent = t
     return t
 end
 
-local bTombolPlay = bBuatTombol("▶", 8, Color3.fromRGB(150, 110, 20), 32)
-local bTombolStop = bBuatTombol("⏹", 44, Color3.fromRGB(150, 80, 20), 32)
-local bTombolNext = bBuatTombol("⏭", 80, Color3.fromRGB(130, 100, 15), 32)
-local bTombolAcak = bBuatTombol("🔀", 116, Color3.fromRGB(140, 110, 30), 32)
-local bTombolUlang = bBuatTombol("🔁", 152, Color3.fromRGB(160, 120, 25), 32)
+local bTombolPlay = bBuatTombol("▶", 8, GN.DIAMOND_DARK, 32)
+local bTombolStop = bBuatTombol("⏹", 44, Color3.fromRGB(60, 120, 200), 32)
+local bTombolNext = bBuatTombol("⏭", 80, GN.DIAMOND_DARK, 32)
+local bTombolAcak = bBuatTombol("🔀", 116, GN.DIAMOND_MID, 32)
+local bTombolUlang = bBuatTombol("🔁", 152, GN.DIAMOND_DARK, 32)
 
 local function formatWaktu(detik)
     if not detik or detik ~= detik then detik = 0 end
@@ -842,10 +970,10 @@ local function updateTeks()
     end
     if bombaxSedangDiputar then
         bStatusLabel.Text = "● Diputar"
-        bStatusLabel.TextColor3 = Color3.fromRGB(100, 70, 0)
+        bStatusLabel.TextColor3 = GN.DIAMOND_LIGHT
     else
         bStatusLabel.Text = "● Berhenti"
-        bStatusLabel.TextColor3 = Color3.fromRGB(80, 60, 20)
+        bStatusLabel.TextColor3 = GN.DIAMOND_BLUE
     end
 end
 
@@ -924,13 +1052,15 @@ RunService.RenderStepped:Connect(function(dt)
     end
     shimmerPos = shimmerPos + dt * 1.2
     if shimmerPos > 1.4 then shimmerPos = -0.4 end
+    bShimmer.Position = UDim2.new(shimmerPos, 0, 0, 0)
 end)
 
 updateTeks()
 
-print("✅ [3/15] BOMBAX Music Player Loaded")
+print("✅ [3/15] BOMBAX Music Player - DIAMOND BLUE Theme Loaded")
 print("   " .. #Bombax.DaftarLagu .. " lagu tersedia")-- =========================================================
 -- SECTION 4/15 : FUNGSI UTAMA + HD SKY + FPS/PING + GRAFIK
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
 -- ============ FIRE ============
@@ -1495,7 +1625,7 @@ function spawnKillEffect(pos)
     p.CanCollide = false
     p.Transparency = 0.5
     p.Material = Enum.Material.Neon
-    p.Color = Color3.fromRGB(255, 210, 80)
+    p.Color = Color3.fromRGB(120, 200, 255)
     p.Size = Vector3.new(2, 2, 2)
     p.Position = pos
     p.Parent = workspace
@@ -1554,12 +1684,12 @@ function createFPSPingGui()
     frame.Name = "MainFrame"
     frame.Size = UDim2.new(0, 100, 0, 20)
     frame.Position = UDim2.new(1, -110, 0, 5)
-    frame.BackgroundColor3 = Color3.fromRGB(25, 20, 8)
+    frame.BackgroundColor3 = Color3.fromRGB(10, 25, 60)
     frame.BackgroundTransparency = 0.3
     frame.BorderSizePixel = 0
     frame.Parent = fpsPingGui
     rnd(frame, 4)
-    strk(frame, C.GOLD, 1, 0.4)
+    strk(frame, C.CYAN, 1, 0.4)
 
     local label = Instance.new("TextLabel")
     label.Name = "StatsLabel"
@@ -1567,7 +1697,7 @@ function createFPSPingGui()
     label.Position = UDim2.new(0, 3, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = "FPS: 0 | Ping: 0"
-    label.TextColor3 = C.GOLD
+    label.TextColor3 = C.CYAN
     label.TextSize = 10
     label.Font = Enum.Font.GothamBold
     label.TextXAlignment = Enum.TextXAlignment.Center
@@ -1602,7 +1732,7 @@ task.spawn(function()
                     if currentFPS >= 50 then
                         label.TextColor3 = C.GRN
                     elseif currentFPS >= 30 then
-                        label.TextColor3 = C.GOLD
+                        label.TextColor3 = C.CYAN
                     else
                         label.TextColor3 = C.RED
                     end
@@ -1812,7 +1942,8 @@ function applyNoScreenEffects()
         for _, v in pairs(Lighting:GetChildren()) do
             for _, t in pairs(ScreenEffectTypes) do
                 if v:IsA(t) then
-                    DisabledEffects[v] = v.Enabled                    v.Enabled = false
+                    DisabledEffects[v] = v.Enabled
+                    v.Enabled = false
                 end
             end
         end
@@ -1843,11 +1974,12 @@ function applyCleanSky()
 end
 
 print("✅ [4/15] Fungsi Utama + HD Sky + FPS/Ping + Grafik Logic Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 5/15 : ESP + AUTO PARRY (23 ID)
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- ============ ESP SYSTEM ============
 ESPObjects = {}
 StatusESP = {}
 CachedSCP = {}
@@ -2457,11 +2589,12 @@ RunService.RenderStepped:Connect(function()
 end)
 
 print("✅ [5/15] ESP + Auto Parry (23 ID) Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 6/15 : AIMBOT SENTER + AIMBOT KILLER + FAST VAULT
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- ============ AIMBOT SENTER ============
 AimbotLaserGui = nil
 AimbotLaserLines = {}
 
@@ -2618,7 +2751,7 @@ task.spawn(function()
                     line.Visible = true
                     line.From = Vector2.new(cam2.ViewportSize.X / 2, cam2.ViewportSize.Y / 2)
                     line.To = Vector2.new(screenPoint.X, screenPoint.Y)
-                    line.Color = AimbotSenter.LaserColor or Color3.fromRGB(255, 210, 80)
+                    line.Color = AimbotSenter.LaserColor or Color3.fromRGB(120, 200, 255)
                     line.Thickness = 2
                     line.Transparency = 0.5
                     table.insert(AimbotLaserLines, line)
@@ -2791,8 +2924,10 @@ if LP.Character and FastVault.Enabled then
     pcall(function() hookVault(LP.Character) end)
 end
 
-print("✅ [6/15] Aimbot Senter + Aimbot Killer + Fast Vault Loaded")-- =========================================================
+print("✅ [6/15] Aimbot Senter + Aimbot Killer + Fast Vault Loaded")
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 7/15 : GUI UTAMA + TOMBOL W + PANEL + TAB BAR
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
 gui = Instance.new("ScreenGui")
@@ -2807,13 +2942,15 @@ if not ok then gui.Parent = PG end
 
 _G.Roooor_Gui = gui
 
--- Tombol W (PAKE GAMBAR ID LU)
+-- =========================================================
+-- TOMBOL W (PAKE GAMBAR ID LU - UKURAN BESAR)
+-- =========================================================
 btnContainer = Instance.new("ImageButton")
 btnContainer.Size = UDim2.fromOffset(56, 56)
 btnContainer.Position = UDim2.fromOffset(20, 120)
 btnContainer.BackgroundColor3 = C.PANEL
 btnContainer.Image = IMAGE_ID
-btnContainer.ImageTransparency = 0.1
+btnContainer.ImageTransparency = 0.05
 btnContainer.BorderSizePixel = 0
 btnContainer.AutoButtonColor = false
 btnContainer.Active = true
@@ -2821,6 +2958,7 @@ btnContainer.ZIndex = 10
 btnContainer.Parent = gui
 rnd(btnContainer, 999)
 
+-- RING 1 (OUTER)
 local ring1 = Instance.new("Frame")
 ring1.Size = UDim2.new(1, 8, 1, 8)
 ring1.Position = UDim2.new(0, -4, 0, -4)
@@ -2831,18 +2969,19 @@ rnd(ring1, 999)
 
 local ring1Stroke = Instance.new("UIStroke")
 ring1Stroke.Thickness = 2.5
-ring1Stroke.Color = C.GOLD
+ring1Stroke.Color = C.CYAN
 ring1Stroke.Transparency = 0.1
 ring1Stroke.Parent = ring1
 
 local ring1Grad = Instance.new("UIGradient")
 ring1Grad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, C.GOLD),
-    ColorSequenceKeypoint.new(0.5, C.GOLD_LIGHT),
-    ColorSequenceKeypoint.new(1, C.ORANGE),
+    ColorSequenceKeypoint.new(0, C.CYAN),
+    ColorSequenceKeypoint.new(0.5, DIAMOND_LIGHT),
+    ColorSequenceKeypoint.new(1, DIAMOND_DARK),
 })
 ring1Grad.Parent = ring1Stroke
 
+-- RING 2 (INNER)
 local ring2 = Instance.new("Frame")
 ring2.Size = UDim2.new(1, 4, 1, 4)
 ring2.Position = UDim2.new(0, -2, 0, -2)
@@ -2853,19 +2992,20 @@ rnd(ring2, 999)
 
 local ring2Stroke = Instance.new("UIStroke")
 ring2Stroke.Thickness = 1.5
-ring2Stroke.Color = C.GOLD_LIGHT
+ring2Stroke.Color = DIAMOND_LIGHT
 ring2Stroke.Transparency = 0.4
 ring2Stroke.Parent = ring2
 
+-- GLOW BIRU KINCLONG
 local tGlow = Instance.new("UIStroke")
-tGlow.Color = C.GOLD_LIGHT
+tGlow.Color = C.CYAN
 tGlow.Thickness = 8
-tGlow.Transparency = 0.75
+tGlow.Transparency = 0.7
 tGlow.Parent = btnContainer
 
 local tStroke = Instance.new("UIStroke")
 tStroke.Thickness = 2
-tStroke.Color = C.GOLD
+tStroke.Color = DIAMOND_BLUE
 tStroke.Parent = btnContainer
 
 task.spawn(function()
@@ -2875,7 +3015,7 @@ task.spawn(function()
         ring1.Rotation = t * 45
         ring2.Rotation = -t * 60
         ring1Grad.Rotation = t * 90
-        tGlow.Transparency = 0.75 - math.abs(math.sin(t * 2)) * 0.4
+        tGlow.Transparency = 0.7 - math.abs(math.sin(t * 2)) * 0.4
         tStroke.Transparency = 0.1 + math.abs(math.sin(t * 2.5)) * 0.3
         task.wait(0.03)
     end
@@ -2894,7 +3034,7 @@ btnContainer.MouseLeave:Connect(function()
 end)
 
 -- =========================================================
--- PANEL UTAMA
+-- PANEL UTAMA (BIRU DIAMOND KINCLONG)
 -- =========================================================
 panel = Instance.new("Frame")
 panel.Size = UDim2.fromOffset(620, 420)
@@ -2906,20 +3046,91 @@ panel.ClipsDescendants = true
 panel.Visible = false
 panel.Parent = gui
 rnd(panel, 14)
-strk(panel, C.GOLD, 2, 0.25)
+strk(panel, DIAMOND_BLUE, 2, 0.25)
 
+-- GRADIENT BIRU BERGERAK DI PANEL
 local bgGrad = Instance.new("UIGradient")
-bgGrad.Color = ColorSequence.new(C.BG, C.BG2, C.BG)
+bgGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(10, 25, 60)),
+    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(30, 70, 140)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(80, 160, 240)),
+    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(30, 70, 140)),
+    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(10, 25, 60)),
+})
 bgGrad.Rotation = 135
 bgGrad.Parent = panel
 
-local header = Instance.new("Frame")
+task.spawn(function()
+    local t = 0
+    while bgGrad.Parent do
+        t = t + 0.8
+        bgGrad.Rotation = (135 + t) % 360
+        task.wait(0.05)
+    end
+end)
+
+-- SHIMMER DI PANEL (KILAU BERGERAK)
+local panelShimmer = Instance.new("ImageLabel")
+panelShimmer.Name = "PanelShimmer"
+panelShimmer.Size = UDim2.new(0, 200, 1.5, 0)
+panelShimmer.Position = UDim2.new(0, -200, 0, 0)
+panelShimmer.BackgroundTransparency = 1
+panelShimmer.Image = "rbxassetid://5028857084"
+panelShimmer.ImageColor3 = Color3.fromRGB(150, 220, 255)
+panelShimmer.ImageTransparency = 0.7
+panelShimmer.ZIndex = 1
+panelShimmer.Parent = panel
+
+local panelShimmerCorner = Instance.new("UICorner")
+panelShimmerCorner.CornerRadius = UDim.new(0, 14)
+panelShimmerCorner.Parent = panelShimmer
+
+task.spawn(function()
+    while panelShimmer.Parent do
+        panelShimmer.Position = UDim2.new(0, -200, 0, 0)
+        TweenService:Create(panelShimmer, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {
+            Position = UDim2.new(1, 50, 0, 0)
+        }):Play()
+        task.wait(3)
+    end
+end)
+
+-- GLOW DI PANEL (BIRU KINCLONG)
+local panelGlow = Instance.new("UIStroke")
+panelGlow.Color = DIAMOND_BLUE
+panelGlow.Thickness = 8
+panelGlow.Transparency = 0.75
+panelGlow.Parent = panel
+
+-- =========================================================
+-- HEADER (BIRU DIAMOND)
+-- =========================================================
+header = Instance.new("Frame")
 header.Size = UDim2.new(1, 0, 0, 52)
 header.BackgroundColor3 = C.PANEL
 header.BackgroundTransparency = 0.05
 header.BorderSizePixel = 0
 header.Parent = panel
 rnd(header, 14)
+
+-- HEADER GRADIENT BIRU BERGERAK
+local headerGradNew = Instance.new("UIGradient")
+headerGradNew.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 50, 120)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(80, 160, 240)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 50, 120)),
+})
+headerGradNew.Rotation = 0
+headerGradNew.Parent = header
+
+task.spawn(function()
+    local t = 0
+    while headerGradNew.Parent do
+        t = t + 1
+        headerGradNew.Rotation = (t * 1.5) % 360
+        task.wait(0.05)
+    end
+end)
 
 local hPatch = Instance.new("Frame")
 hPatch.Size = UDim2.new(1, 0, 0, 26)
@@ -2929,65 +3140,59 @@ hPatch.BackgroundTransparency = 0.05
 hPatch.BorderSizePixel = 0
 hPatch.Parent = header
 
--- LOGO HEADER (PAKE GAMBAR ID LU)
-local logo = Instance.new("Frame")
-logo.Size = UDim2.fromOffset(32, 32)
-logo.Position = UDim2.new(0, 12, 0.5, -16)
-logo.BackgroundColor3 = C.PANEL2
-logo.BorderSizePixel = 0
-logo.Parent = header
-rnd(logo, 8)
-strk(logo, C.GOLD, 1.5, 0.3)
-
-local logoImg = Instance.new("ImageLabel")
-logoImg.Size = UDim2.new(0.8, 0, 0.8, 0)
-logoImg.Position = UDim2.new(0.1, 0, 0.1, 0)
-logoImg.BackgroundTransparency = 1
-logoImg.Image = IMAGE_ID
-logoImg.Parent = logo
-
--- GAMBAR KECIL DI PINGGIR TEKS ONE W
+-- GAMBAR DI PINGGIR "ONE W" (UKURAN BESAR KAYA TOMBOL GUI)
 local hIcon = Instance.new("ImageLabel")
-hIcon.Size = UDim2.fromOffset(20, 20)
-hIcon.Position = UDim2.new(0, 52, 0.5, -10)
+hIcon.Size = UDim2.fromOffset(36, 36)
+hIcon.Position = UDim2.new(0, 10, 0.5, -18)
 hIcon.BackgroundTransparency = 1
 hIcon.Image = IMAGE_ID
 hIcon.Parent = header
 
+-- HAPUS LOGO LAMA (yang di dalam kotak)
+-- Ga ada logo lagi, cuma hIcon doang
+
+-- TEKS "ONE W" (GESER KE KANAN BIAR GAK NUMBRUK GAMBAR)
 local hTitle = Instance.new("TextLabel")
 hTitle.Size = UDim2.new(0, 200, 0, 24)
-hTitle.Position = UDim2.new(0, 76, 0.5, -12)
+hTitle.Position = UDim2.new(0, 54, 0.5, -12)
 hTitle.BackgroundTransparency = 1
 hTitle.Text = "ONE W"
-hTitle.TextColor3 = C.TXT
-hTitle.TextSize = 16
+hTitle.TextColor3 = Color3.fromRGB(230, 245, 255)
+hTitle.TextSize = 18
 hTitle.Font = Enum.Font.GothamBlack
 hTitle.TextXAlignment = Enum.TextXAlignment.Left
+hTitle.TextStrokeTransparency = 0.5
+hTitle.TextStrokeColor3 = Color3.fromRGB(20, 60, 120)
 hTitle.Parent = header
 
 local hTitleGrad = Instance.new("UIGradient")
-hTitleGrad.Color = ColorSequence.new(C.GOLD, C.ORANGE)
+hTitleGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(180, 230, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 200, 255)),
+})
 hTitleGrad.Parent = hTitle
 
+-- TOMBOL MINIMIZE
 local minBtn = Instance.new("TextButton")
 minBtn.Size = UDim2.fromOffset(26, 26)
 minBtn.Position = UDim2.new(1, -62, 0.5, -13)
-minBtn.BackgroundColor3 = C.BG
+minBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 120)
 minBtn.BackgroundTransparency = 0.3
 minBtn.Text = "—"
-minBtn.TextColor3 = C.TXT
+minBtn.TextColor3 = Color3.fromRGB(230, 245, 255)
 minBtn.TextSize = 13
 minBtn.Font = Enum.Font.GothamBold
 minBtn.BorderSizePixel = 0
 minBtn.AutoButtonColor = false
 minBtn.Parent = header
 rnd(minBtn, 6)
-strk(minBtn, C.GOLD, 1, 0.4)
+strk(minBtn, DIAMOND_BLUE, 1, 0.4)
 
+-- TOMBOL CLOSE
 closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.fromOffset(26, 26)
 closeBtn.Position = UDim2.new(1, -32, 0.5, -13)
-closeBtn.BackgroundColor3 = C.BG
+closeBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 120)
 closeBtn.BackgroundTransparency = 0.3
 closeBtn.Text = "✕"
 closeBtn.TextColor3 = C.RED
@@ -2999,7 +3204,9 @@ closeBtn.Parent = header
 rnd(closeBtn, 6)
 strk(closeBtn, C.RED, 1, 0.4)
 
+-- =========================================================
 -- TAB BAR
+-- =========================================================
 tabBar = Instance.new("Frame")
 tabBar.Size = UDim2.new(1, -20, 0, 42)
 tabBar.Position = UDim2.new(0, 10, 0, 60)
@@ -3008,7 +3215,7 @@ tabBar.BackgroundTransparency = 0.3
 tabBar.BorderSizePixel = 0
 tabBar.Parent = panel
 rnd(tabBar, 8)
-strk(tabBar, C.GOLD, 1, 0.3)
+strk(tabBar, DIAMOND_BLUE, 1, 0.3)
 
 tabScroll = Instance.new("ScrollingFrame")
 tabScroll.Size = UDim2.new(1, -8, 1, -8)
@@ -3046,7 +3253,7 @@ leftCol.BackgroundTransparency = 0.3
 leftCol.BorderSizePixel = 0
 leftCol.Parent = contentFrame
 rnd(leftCol, 10)
-strk(leftCol, C.GOLD, 1, 0.3)
+strk(leftCol, DIAMOND_BLUE, 1, 0.3)
 
 rightCol = Instance.new("Frame")
 rightCol.Size = UDim2.new(0.5, -5, 1, 0)
@@ -3056,7 +3263,7 @@ rightCol.BackgroundTransparency = 0.3
 rightCol.BorderSizePixel = 0
 rightCol.Parent = contentFrame
 rnd(rightCol, 10)
-strk(rightCol, C.GOLD, 1, 0.3)
+strk(rightCol, DIAMOND_BLUE, 1, 0.3)
 
 leftScroll = Instance.new("ScrollingFrame")
 leftScroll.Size = UDim2.new(1, -12, 1, -12)
@@ -3064,7 +3271,7 @@ leftScroll.Position = UDim2.new(0, 6, 0, 6)
 leftScroll.BackgroundTransparency = 1
 leftScroll.BorderSizePixel = 0
 leftScroll.ScrollBarThickness = 2
-leftScroll.ScrollBarImageColor3 = C.GOLD
+leftScroll.ScrollBarImageColor3 = DIAMOND_BLUE
 leftScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 leftScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 leftScroll.Parent = leftCol
@@ -3079,7 +3286,7 @@ rightScroll.Position = UDim2.new(0, 6, 0, 6)
 rightScroll.BackgroundTransparency = 1
 rightScroll.BorderSizePixel = 0
 rightScroll.ScrollBarThickness = 2
-rightScroll.ScrollBarImageColor3 = C.GOLD
+rightScroll.ScrollBarImageColor3 = DIAMOND_BLUE
 rightScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 rightScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 rightScroll.Parent = rightCol
@@ -3091,7 +3298,9 @@ rightLayout.Parent = rightScroll
 cs = leftScroll
 _G.Roooor_cs = cs
 
+-- =========================================================
 -- DRAG PANEL
+-- =========================================================
 dragging = false
 dragStart = nil
 startPos = nil
@@ -3123,7 +3332,9 @@ UIS.InputEnded:Connect(function(input)
     end
 end)
 
+-- =========================================================
 -- DRAG TOMBOL W
+-- =========================================================
 btnDragging = false
 btnDragStart = nil
 btnStartPos = nil
@@ -3160,7 +3371,9 @@ UIS.InputEnded:Connect(function(input)
     end
 end)
 
+-- =========================================================
 -- OPEN / CLOSE
+-- =========================================================
 isOpen = false
 
 function openPanel()
@@ -3217,11 +3430,12 @@ UIS.InputBegan:Connect(function(input, gpe)
 end)
 
 print("✅ [7/15] GUI + Tombol W Gambar + Panel + Tab Bar Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 8/15 : KOMPONEN UI
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- ============ SECTION HEADER ============
 function sec(title, icon, parent)
     parent = parent or cs
     local f = Instance.new("Frame")
@@ -3232,7 +3446,7 @@ function sec(title, icon, parent)
     local deco = Instance.new("Frame")
     deco.Size = UDim2.new(0, 3, 0, 14)
     deco.Position = UDim2.new(0, 2, 0.5, -7)
-    deco.BackgroundColor3 = C.GOLD
+    deco.BackgroundColor3 = C.CYAN
     deco.BorderSizePixel = 0
     deco.Parent = f
     rnd(deco, 2)
@@ -3242,13 +3456,14 @@ function sec(title, icon, parent)
     l.Position = UDim2.new(0, 10, 0, 0)
     l.BackgroundTransparency = 1
     l.Text = (icon or "•") .. " " .. string.upper(title)
-    l.TextColor3 = C.GOLD
+    l.TextColor3 = C.CYAN
     l.TextSize = 9
     l.Font = Enum.Font.GothamBold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.Parent = f
 end
 
+-- ============ TOGGLE ============
 function tog(name, def, cb, parent)
     parent = parent or cs
     local f = Instance.new("Frame")
@@ -3258,7 +3473,7 @@ function tog(name, def, cb, parent)
     f.BorderSizePixel = 0
     f.Parent = parent
     rnd(f, 6)
-    local fStrk = strk(f, C.GOLD, 1, 0.4)
+    local fStrk = strk(f, DIAMOND_BLUE, 1, 0.4)
 
     local l = Instance.new("TextLabel")
     l.Size = UDim2.new(1, -55, 1, 0)
@@ -3290,9 +3505,9 @@ function tog(name, def, cb, parent)
     if saved ~= nil then state = saved else state = def end
     _G.ToggleStates[name] = state
 
-    t.BackgroundColor3 = state and C.GOLD or C.PANEL2
+    t.BackgroundColor3 = state and C.CYAN or C.PANEL2
     k.Position = state and UDim2.new(1, -13, 0.5, -5.5) or UDim2.new(0, 2, 0.5, -5.5)
-    k.BackgroundColor3 = state and Color3.fromRGB(40, 30, 10) or C.DIM
+    k.BackgroundColor3 = state and Color3.fromRGB(20, 50, 120) or C.DIM
 
     local cB = Instance.new("TextButton")
     cB.Size = UDim2.new(1, 0, 1, 0)
@@ -3305,17 +3520,18 @@ function tog(name, def, cb, parent)
         _G.ToggleStates[name] = state
         TweenService:Create(k, TweenInfo.new(0.2, Enum.EasingStyle.Back), {
             Position = state and UDim2.new(1, -13, 0.5, -5.5) or UDim2.new(0, 2, 0.5, -5.5),
-            BackgroundColor3 = state and Color3.fromRGB(40, 30, 10) or C.DIM
+            BackgroundColor3 = state and Color3.fromRGB(20, 50, 120) or C.DIM
         }):Play()
         TweenService:Create(t, TweenInfo.new(0.2), {
-            BackgroundColor3 = state and C.GOLD or C.PANEL2
+            BackgroundColor3 = state and C.CYAN or C.PANEL2
         }):Play()
-        fStrk.Color = state and C.GOLD_LIGHT or C.GOLD
+        fStrk.Color = state and DIAMOND_LIGHT or DIAMOND_BLUE
         playToggleSound()
         if cb then pcall(cb, state) end
     end)
 end
 
+-- ============ SLIDER ============
 function sl(name, min, max, def, cb, parent)
     parent = parent or cs
     local f = Instance.new("Frame")
@@ -3325,7 +3541,7 @@ function sl(name, min, max, def, cb, parent)
     f.BorderSizePixel = 0
     f.Parent = parent
     rnd(f, 6)
-    strk(f, C.GOLD, 1, 0.4)
+    strk(f, DIAMOND_BLUE, 1, 0.4)
 
     local l = Instance.new("TextLabel")
     l.Size = UDim2.new(1, -60, 0, 14)
@@ -3348,7 +3564,7 @@ function sl(name, min, max, def, cb, parent)
     v.Position = UDim2.new(1, -56, 0, 4)
     v.BackgroundTransparency = 1
     v.Text = tostring(curVal)
-    v.TextColor3 = C.GOLD
+    v.TextColor3 = C.CYAN
     v.TextSize = 10
     v.Font = Enum.Font.GothamBold
     v.TextXAlignment = Enum.TextXAlignment.Right
@@ -3357,31 +3573,31 @@ function sl(name, min, max, def, cb, parent)
     local bg2 = Instance.new("Frame")
     bg2.Size = UDim2.new(1, -20, 0, 5)
     bg2.Position = UDim2.new(0, 10, 1, -10)
-    bg2.BackgroundColor3 = C.BG
+    bg2.BackgroundColor3 = Color3.fromRGB(10, 25, 60)
     bg2.BorderSizePixel = 0
     bg2.Parent = f
     rnd(bg2, 3)
 
     local fill = Instance.new("Frame")
     fill.Size = UDim2.new((curVal - min) / (max - min), 0, 1, 0)
-    fill.BackgroundColor3 = C.GOLD
+    fill.BackgroundColor3 = C.CYAN
     fill.BorderSizePixel = 0
     fill.Parent = bg2
     rnd(fill, 3)
 
     local fillGrad = Instance.new("UIGradient")
-    fillGrad.Color = ColorSequence.new(C.GOLD_DARK, C.GOLD, C.GOLD_LIGHT)
+    fillGrad.Color = ColorSequence.new(DIAMOND_DARK, DIAMOND_BLUE, DIAMOND_LIGHT)
     fillGrad.Parent = fill
 
     local kn = Instance.new("Frame")
     kn.Size = UDim2.fromOffset(12, 12)
     kn.Position = UDim2.new((curVal - min) / (max - min), -6, 0.5, -6)
-    kn.BackgroundColor3 = C.GOLD_LIGHT
+    kn.BackgroundColor3 = DIAMOND_LIGHT
     kn.BorderSizePixel = 0
     kn.ZIndex = 2
     kn.Parent = bg2
     rnd(kn, 6)
-    strk(kn, C.GOLD, 1.5)
+    strk(kn, DIAMOND_BLUE, 1.5)
 
     local drag = false
     local function upd(input)
@@ -3421,6 +3637,7 @@ function sl(name, min, max, def, cb, parent)
     end)
 end
 
+-- ============ COLOR PICKER ============
 function cpk(name, def, cb, parent)
     parent = parent or cs
     local f = Instance.new("Frame")
@@ -3430,7 +3647,7 @@ function cpk(name, def, cb, parent)
     f.BorderSizePixel = 0
     f.Parent = parent
     rnd(f, 6)
-    strk(f, C.GOLD, 1, 0.4)
+    strk(f, DIAMOND_BLUE, 1, 0.4)
 
     local l = Instance.new("TextLabel")
     l.Size = UDim2.new(1, -50, 1, 0)
@@ -3451,7 +3668,7 @@ function cpk(name, def, cb, parent)
     cB.BorderSizePixel = 0
     cB.Parent = f
     rnd(cB, 4)
-    strk(cB, C.GOLD, 1.5)
+    strk(cB, DIAMOND_BLUE, 1.5)
 
     local presets = {
         Color3.fromRGB(255, 210, 80),
@@ -3474,6 +3691,7 @@ function cpk(name, def, cb, parent)
     end)
 end
 
+-- ============ BUTTON ============
 function btn(name, cb, parent)
     parent = parent or cs
     local b = Instance.new("TextButton")
@@ -3488,7 +3706,7 @@ function btn(name, cb, parent)
     b.AutoButtonColor = false
     b.Parent = parent
     rnd(b, 6)
-    strk(b, C.GOLD, 1, 0.4)
+    strk(b, DIAMOND_BLUE, 1, 0.4)
 
     b.MouseButton1Click:Connect(function()
         playToggleSound()
@@ -3496,6 +3714,7 @@ function btn(name, cb, parent)
     end)
 end
 
+-- ============ DROPDOWN (cycle) ============
 function drp(name, options, def, cb, parent)
     parent = parent or cs
     local f = Instance.new("Frame")
@@ -3505,7 +3724,7 @@ function drp(name, options, def, cb, parent)
     f.BorderSizePixel = 0
     f.Parent = parent
     rnd(f, 6)
-    strk(f, C.GOLD, 1, 0.4)
+    strk(f, DIAMOND_BLUE, 1, 0.4)
 
     local l = Instance.new("TextLabel")
     l.Size = UDim2.new(0.5, 0, 1, 0)
@@ -3534,7 +3753,7 @@ function drp(name, options, def, cb, parent)
     v.Position = UDim2.new(0.5, 0, 0, 0)
     v.BackgroundTransparency = 1
     v.Text = tostring(cur) .. " ▾"
-    v.TextColor3 = C.GOLD
+    v.TextColor3 = C.CYAN
     v.TextSize = 9
     v.Font = Enum.Font.GothamBold
     v.TextXAlignment = Enum.TextXAlignment.Right
@@ -3611,10 +3830,10 @@ function makeTab(name, icon, order, leftCb, rightCb)
             end
         end
         activeTab = b
-        TweenService:Create(b, TweenInfo.new(0.2), {BackgroundTransparency = 0.5, BackgroundColor3 = C.GOLD}):Play()
+        TweenService:Create(b, TweenInfo.new(0.2), {BackgroundTransparency = 0.5, BackgroundColor3 = C.CYAN}):Play()
         for _, c in pairs(b:GetChildren()) do
             if c:IsA("TextLabel") then
-                TweenService:Create(c, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(40, 30, 10)}):Play()
+                TweenService:Create(c, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(20, 50, 120)}):Play()
             end
         end
         for _, c in pairs(leftScroll:GetChildren()) do
@@ -3639,11 +3858,14 @@ _G.Roooor_drp = drp
 _G.Roooor_makeTab = makeTab
 
 print("✅ [8/15] Komponen UI Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 9/15 : TAB SURVIVOR + TAB KILLER
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- =========================================================
+-- TAB 1: SURVIVOR
+-- =========================================================
 makeTab("Survivor", "🏃", 1, function()
     sec("Auto Parry", "🛡️")
     tog("Enable Auto Parry", false, function(s)
@@ -3656,58 +3878,99 @@ makeTab("Survivor", "🏃", 1, function()
             end
         end
     end)
-    sl("Parry Radius", 5, 40, 15, function(v) AutoParry.ParryDistance = v end)
-    sl("Face Sensitivity", -1, 1, 0.7, function(v) AutoParry.FaceSensitivity = v end)
-    tog("Require Facing", true, function(s) AutoParry.RequireFacing = s end)
-    sl("Cooldown", 0.05, 0.5, 0.2, function(v) AutoParry.Cooldown = v end)
-    sl("Parry Lock", 0.1, 0.6, 0.3, function(v) AutoParry.ParryLockTime = v end)
-    sl("Circle Height", -5, 15, -2.5, function(v) AP_ESPCircle.YOffset = v end)
+    sl("Parry Radius", 5, 40, 15, function(v)
+        AutoParry.ParryDistance = v
+    end)
+    sl("Face Sensitivity", -1, 1, 0.7, function(v)
+        AutoParry.FaceSensitivity = v
+    end)
+    tog("Require Facing", true, function(s)
+        AutoParry.RequireFacing = s
+    end)
+    sl("Cooldown", 0.05, 0.5, 0.2, function(v)
+        AutoParry.Cooldown = v
+    end)
+    sl("Parry Lock", 0.1, 0.6, 0.3, function(v)
+        AutoParry.ParryLockTime = v
+    end)
+    sl("Circle Height", -5, 15, -2.5, function(v)
+        AP_ESPCircle.YOffset = v
+    end)
     tog("Show Circle", false, function(s)
         AP_ESPCircle.Enabled = s
         if not s then AP_ClearCircle() end
     end)
-    btn("Reset Parry Counter", function() AP_parryCount = 0 end)
+    btn("Reset Parry Counter", function()
+        AP_parryCount = 0
+    end)
 
     sec("Auto Skill Check", "⚡")
     tog("Enable Auto Skill Check", false, function(s)
         SkillCheck.Enabled = s
         if s then startSkillCheck() end
     end)
-    drp("Mode", {"Perfect", "Instant"}, "Perfect", function(v) SkillCheck.Mode = v end)
+    drp("Mode", {"Perfect", "Instant"}, "Perfect", function(v)
+        SkillCheck.Mode = v
+    end)
     btn("Reset Counter", function()
         SkillCheck.Success = 0
         SkillCheck.Total = 0
     end)
 
     sec("Auto Wiggle", "🔓")
-    tog("Enable Auto Wiggle", false, function(s) AutoParry.Wiggle = s end)
-    sl("Wiggle Spam", 1, 20, 5, function(v) AutoParry.WiggleSpam = v end)
+    tog("Enable Auto Wiggle", false, function(s)
+        AutoParry.Wiggle = s
+    end)
+    sl("Wiggle Spam", 1, 20, 5, function(v)
+        AutoParry.WiggleSpam = v
+    end)
 
     sec("Auto Flee", "🏃‍♂️")
-    tog("Enable Auto Flee", false, function(s) AutoFlee.Enabled = s end)
-    sl("Detect Distance", 10, 150, 50, function(v) AutoFlee.DetectDistance = v end)
-    sl("Cooldown", 0.1, 5, 0.5, function(v) AutoFlee.Cooldown = v end)
+    tog("Enable Auto Flee", false, function(s)
+        AutoFlee.Enabled = s
+    end)
+    sl("Detect Distance", 10, 150, 50, function(v)
+        AutoFlee.DetectDistance = v
+    end)
+    sl("Cooldown", 0.1, 5, 0.5, function(v)
+        AutoFlee.Cooldown = v
+    end)
 
     sec("Fast Vault", "⚡")
     tog("Enable Fast Vault", false, function(s)
         FastVault.Enabled = s
         if s and LP.Character then hookVault(LP.Character) end
     end)
-    sl("Animation Speed", 1, 5, 1.2, function(v) FastVault.Speed = v end)
+    sl("Animation Speed", 1, 5, 1.2, function(v)
+        FastVault.Speed = v
+    end)
 
     sec("Auto Escape", "🚪")
-    tog("Enable Auto Escape", false, function(s) S.AutoEscapeGate = s end)
-    tog("Killer Deket", true, function(s) S.AutoEscapeUseKillerCheck = s end)
-    tog("Generator Cukup", true, function(s) S.AutoEscapeUseGenCheck = s end)
-    sl("Killer Range", 10, 150, 50, function(v) S.AutoEscapeRange = v end)
+    tog("Enable Auto Escape", false, function(s)
+        S.AutoEscapeGate = s
+    end)
+    tog("Killer Deket", true, function(s)
+        S.AutoEscapeUseKillerCheck = s
+    end)
+    tog("Generator Cukup", true, function(s)
+        S.AutoEscapeUseGenCheck = s
+    end)
+    sl("Killer Range", 10, 150, 50, function(v)
+        S.AutoEscapeRange = v
+    end)
 
     sec("Support", "💊")
     tog("Instant Interact", false, function(s) S.InstantInteract = s end)
 
     sec("Teleport", "🌀")
-    btn("TP Finish Line", function() teleportToFinishLine() end)
+    btn("TP Finish Line", function()
+        teleportToFinishLine()
+    end)
 end, nil)
 
+-- =========================================================
+-- TAB 2: KILLER
+-- =========================================================
 makeTab("Killer", "🔪", 2, function()
     sec("Auto Attack", "⚔️")
     tog("Killer Auto Attack", false, function(s) S.Killer_AutoAtk = s end)
@@ -3754,10 +4017,16 @@ end, function()
     end, rightScroll)
 end)
 
-print("✅ [9/15] Tab Survivor + Tab Killer Loaded")-- =========================================================
+print("✅ [9/15] Tab Survivor + Tab Killer Loaded")
+print("   Theme: DIAMOND BLUE")
+print("   Fitur baru: Stun Indicator Toggle")-- =========================================================
 -- SECTION 10/15 : TAB ESP + FIRE + MUSIK
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- =========================================================
+-- TAB 3: ESP
+-- =========================================================
 makeTab("ESP", "👁️", 3, function()
     sec("Player ESP", "🟢")
     tog("ESP Survivor", true, function(s) ESP.Survivor = s end)
@@ -3808,6 +4077,9 @@ end, function()
     end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 4: FIRE
+-- =========================================================
 makeTab("Fire", "🔥", 4, function()
     sec("Fire Control", "⚙️")
     tog("Enable Fire", false, function(s)
@@ -3831,7 +4103,7 @@ end, function()
         btn2.LayoutOrder = i + 100
         btn2.Parent = rightScroll
         rnd(btn2, 6)
-        strk(btn2, C.GOLD, 1, 0.6)
+        strk(btn2, DIAMOND_BLUE, 1, 0.6)
 
         local btnLbl = Instance.new("TextLabel")
         btnLbl.Size = UDim2.new(1, -10, 1, 0)
@@ -3845,9 +4117,9 @@ end, function()
         btnLbl.Parent = btn2
 
         if S.FireType == fireName then
-            btn2.BackgroundColor3 = C.GOLD
+            btn2.BackgroundColor3 = C.CYAN
             btn2.BackgroundTransparency = 0
-            btnLbl.TextColor3 = Color3.fromRGB(40, 30, 10)
+            btnLbl.TextColor3 = Color3.fromRGB(20, 50, 120)
         end
 
         btn2.MouseButton1Click:Connect(function()
@@ -3861,14 +4133,17 @@ end, function()
                     if l then l.TextColor3 = C.TXT end
                 end
             end
-            btn2.BackgroundColor3 = C.GOLD
+            btn2.BackgroundColor3 = C.CYAN
             btn2.BackgroundTransparency = 0
-            btnLbl.TextColor3 = Color3.fromRGB(40, 30, 10)
+            btnLbl.TextColor3 = Color3.fromRGB(20, 50, 120)
             playToggleSound()
         end)
     end
 end)
 
+-- =========================================================
+-- TAB 5: MUSIK
+-- =========================================================
 makeTab("Musik", "🎵", 5, function()
     sec("Music Player", "🎵")
 
@@ -3921,7 +4196,7 @@ end, function()
         btn2.LayoutOrder = i
         btn2.Parent = rightScroll
         rnd(btn2, 6)
-        strk(btn2, C.GOLD, 1, 0.6)
+        strk(btn2, DIAMOND_BLUE, 1, 0.6)
 
         local btnLbl = Instance.new("TextLabel")
         btnLbl.Size = UDim2.new(1, -10, 1, 0)
@@ -3952,11 +4227,14 @@ end, function()
 end)
 
 print("✅ [10/15] Tab ESP + Fire + Musik Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 11/15 : TAB MISC + VISUAL + GRAFIK ULTRA
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- =========================================================
+-- TAB 6: MISC
+-- =========================================================
 makeTab("Misc", "⚙️", 6, function()
     sec("Movement", "🏃")
     tog("Walk Speed", false, function(s) S.WalkSpeed = s end)
@@ -3995,6 +4273,9 @@ end, function()
     btn("Rejoin Server", function() rejoinServer() end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 7: VISUAL
+-- =========================================================
 makeTab("Visual", "✨", 7, function()
     sec("Fullbright & No Fog", "💡")
     tog("Fullbright", false, function(s)
@@ -4048,6 +4329,18 @@ makeTab("Visual", "✨", 7, function()
     sl("Korblox Scale", 0.3, 3, 1, function(v)
         S.KorbloxScale = v
         if S.Korblox then applyKorblox(true, "Pencil", S.KorbloxYOffset, v) end
+    end)
+    tog("8-Bit Crown", false, function(s)
+        S.EightBitOn = s
+        apply8Bit(s, "Royal Crown", S.EightBitSize, S.EightBitHeight)
+    end)
+    sl("Crown Size", 0.3, 3, 1.24, function(v)
+        S.EightBitSize = v
+        if S.EightBitOn then apply8Bit(true, "Royal Crown", v, S.EightBitHeight) end
+    end)
+    sl("Crown Height", -1, 4, 0.88, function(v)
+        S.EightBitHeight = v
+        if S.EightBitOn then apply8Bit(true, "Royal Crown", S.EightBitSize, v) end
     end)
 end, function()
     sec("Sky Preset", "🌌", rightScroll)
@@ -4128,6 +4421,9 @@ end, function()
     end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 8: GRAFIK ULTRA
+-- =========================================================
 makeTab("Grafik Ultra", "🎬", 8, function()
     sec("Soft Cinematic", "🎬")
     tog("Soft Cinematic", false, function(s)
@@ -4137,9 +4433,15 @@ makeTab("Grafik Ultra", "🎬", 8, function()
             GraphicDisableSoftCinematic()
         end
     end)
-    tog("Full Bright", false, function(s) GraphicState.FullBright = s end)
-    tog("No Fog", false, function(s) GraphicState.NoFog = s end)
-    tog("Clean Sky", false, function(s) GraphicState.CleanSky = s end)
+    tog("Full Bright", false, function(s)
+        GraphicState.FullBright = s
+    end)
+    tog("No Fog", false, function(s)
+        GraphicState.NoFog = s
+    end)
+    tog("Clean Sky", false, function(s)
+        GraphicState.CleanSky = s
+    end)
 end, function()
     sec("SharpGraph Preset", "⚡", rightScroll)
     btn("ANTI LAG 10", function() SharpApplyAntiLag10() end, rightScroll)
@@ -4163,16 +4465,33 @@ end, function()
         btn2.AutoButtonColor = false
         btn2.Parent = rightScroll
         rnd(btn2, 6)
-        strk(btn2, C.GOLD, 1, 0.4)
+        strk(btn2, DIAMOND_BLUE, 1, 0.4)
 
         local pad = Instance.new("UIPadding")
         pad.PaddingLeft = UDim.new(0, 10)
         pad.Parent = btn2
 
+        if GraphicState.SelectedPreset == presetName then
+            btn2.BackgroundColor3 = C.CYAN
+            btn2.BackgroundTransparency = 0
+            btn2.TextColor3 = Color3.fromRGB(20, 50, 120)
+        end
+
         btn2.MouseButton1Click:Connect(function()
             GraphicSelectPreset(presetName)
+            for _, c in pairs(rightScroll:GetChildren()) do
+                if c:IsA("TextButton") and c:GetAttribute("IsPreset") then
+                    c.BackgroundColor3 = C.PANEL
+                    c.BackgroundTransparency = 0.4
+                    c.TextColor3 = C.TXT
+                end
+            end
+            btn2.BackgroundColor3 = C.CYAN
+            btn2.BackgroundTransparency = 0
+            btn2.TextColor3 = Color3.fromRGB(20, 50, 120)
             playToggleSound()
         end)
+        btn2:SetAttribute("IsPreset", true)
     end
 
     sec("Reset", "🔄", rightScroll)
@@ -4183,11 +4502,14 @@ end, function()
 end)
 
 print("✅ [11/15] Tab Misc + Visual + Grafik Ultra Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 12/15 : TAB AIMBOT + TAB MOONWALK
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- =========================================================
+-- TAB 9: AIMBOT
+-- =========================================================
 makeTab("Aimbot", "🎯", 9, function()
     sec("Aimbot Killer", "🗡️")
     tog("Enable Aimbot Killer", false, function(s)
@@ -4200,7 +4522,9 @@ makeTab("Aimbot", "🎯", 9, function()
             Aimlock_StopLoop()
         end
     end)
-    sl("Killer Radius", 5, 100, 80, function(v) Aimlock.Radius = v end)
+    sl("Killer Radius", 5, 100, 80, function(v)
+        Aimlock.Radius = v
+    end)
     drp("Killer Aim Part", {"HumanoidRootPart", "Head", "UpperTorso"}, "HumanoidRootPart", function(v)
         Aimlock.AimPart = v
     end)
@@ -4216,8 +4540,10 @@ makeTab("Aimbot", "🎯", 9, function()
     drp("Senter Lock Part", {"Head", "HumanoidRootPart", "UpperTorso"}, "Head", function(v)
         AimbotSenter.LockPart = v
     end)
-    tog("Show ESP Laser", true, function(s) AimbotSenter.ShowLaser = s end)
-    cpk("Laser Color", Color3.fromRGB(255, 210, 80), function(c)
+    tog("Show ESP Laser", true, function(s)
+        AimbotSenter.ShowLaser = s
+    end)
+    cpk("Laser Color", DIAMOND_BLUE, function(c)
         AimbotSenter.LaserColor = c
     end)
 end, function()
@@ -4235,6 +4561,9 @@ end, function()
     infoLbl.Parent = rightScroll
 end)
 
+-- =========================================================
+-- TAB 10: MOONWALK
+-- =========================================================
 makeTab("Moonwalk", "🕺", 10, function()
     sec("Moonwalk", "🕺")
     tog("Enable Moonwalk", false, function(s)
@@ -4265,8 +4594,10 @@ end, function()
     tog("Use Slow Speed", true, function(s) Moonwalk.UseSlow = s end, rightScroll)
 end)
 
-print("✅ [12/15] Tab Aimbot + Tab Moonwalk Loaded")-- =========================================================
+print("✅ [12/15] Tab Aimbot + Tab Moonwalk Loaded")
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 13/15 : LOOP FITUR AKTIF + STUN INDICATOR + CAMERA FIX
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
 -- ============ MOONWALK BUTTON + LOGIC ============
@@ -4308,7 +4639,7 @@ mwBtnGui.Parent = PG
 mwBtn = Instance.new("TextButton")
 mwBtn.Size = UDim2.fromOffset(60, 60)
 mwBtn.Position = UDim2.new(0, 20, 1, -100)
-mwBtn.BackgroundColor3 = Color3.fromRGB(40, 32, 12)
+mwBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 120)
 mwBtn.Text = "MW"
 mwBtn.TextColor3 = Color3.new(1, 1, 1)
 mwBtn.TextSize = 16
@@ -4318,12 +4649,12 @@ mwBtn.Active = true
 mwBtn.Draggable = true
 mwBtn.Parent = mwBtnGui
 rnd(mwBtn, 999)
-local mwBtnStroke = strk(mwBtn, C.GOLD, 2, 0.5)
+local mwBtnStroke = strk(mwBtn, DIAMOND_BLUE, 2, 0.5)
 
 mwLockBtn = Instance.new("TextButton")
 mwLockBtn.Size = UDim2.fromOffset(60, 22)
 mwLockBtn.Position = UDim2.new(0, 20, 1, -128)
-mwLockBtn.BackgroundColor3 = Color3.fromRGB(55, 45, 18)
+mwLockBtn.BackgroundColor3 = Color3.fromRGB(30, 60, 130)
 mwLockBtn.Text = "UNLOCK"
 mwLockBtn.TextColor3 = Color3.new(1, 1, 1)
 mwLockBtn.TextSize = 10
@@ -4331,24 +4662,24 @@ mwLockBtn.Font = Enum.Font.GothamBold
 mwLockBtn.AutoButtonColor = false
 mwLockBtn.Parent = mwBtnGui
 rnd(mwLockBtn, 999)
-local mwLockStroke = strk(mwLockBtn, C.GOLD, 1.5, 0.5)
+local mwLockStroke = strk(mwLockBtn, DIAMOND_BLUE, 1.5, 0.5)
 
 function mwBtnUpdateUI()
     if Moonwalk.Enabled then
         mwBtn.Text = "MW ON"
-        mwBtnStroke.Color = C.GOLD_LIGHT
-        mwBtn.BackgroundColor3 = Color3.fromRGB(150, 110, 20)
+        mwBtnStroke.Color = DIAMOND_LIGHT
+        mwBtn.BackgroundColor3 = DIAMOND_MID
     else
         mwBtn.Text = "MW"
-        mwBtnStroke.Color = C.GOLD
-        mwBtn.BackgroundColor3 = Color3.fromRGB(40, 32, 12)
+        mwBtnStroke.Color = DIAMOND_BLUE
+        mwBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 120)
     end
     if Moonwalk.Locked then
         mwLockBtn.Text = "LOCKED"
         mwLockBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
     else
         mwLockBtn.Text = "UNLOCK"
-        mwLockBtn.BackgroundColor3 = Color3.fromRGB(55, 45, 18)
+        mwLockBtn.BackgroundColor3 = Color3.fromRGB(30, 60, 130)
     end
 end
 
@@ -4634,19 +4965,19 @@ function addKillFeed(killerName, survivorName)
     if not S.KillFeed then return end
     local entry = Instance.new("Frame")
     entry.Size = UDim2.new(1, 0, 0, 28)
-    entry.BackgroundColor3 = Color3.fromRGB(55, 45, 18)
+    entry.BackgroundColor3 = Color3.fromRGB(20, 50, 120)
     entry.BackgroundTransparency = 0.2
     entry.BorderSizePixel = 0
     entry.Parent = killFeedFrame
     rnd(entry, 6)
-    strk(entry, C.GOLD, 1, 0.5)
+    strk(entry, DIAMOND_BLUE, 1, 0.5)
 
     local lbl = Instance.new("TextLabel")
     lbl.Size = UDim2.new(1, -10, 1, 0)
     lbl.Position = UDim2.new(0, 5, 0, 0)
     lbl.BackgroundTransparency = 1
     lbl.Text = killerName .. " > " .. survivorName
-    lbl.TextColor3 = Color3.fromRGB(255, 230, 160)
+    lbl.TextColor3 = DIAMOND_LIGHT
     lbl.TextSize = 11
     lbl.Font = Enum.Font.GothamBold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -4711,7 +5042,7 @@ local function CreateStunBillboard(char)
     titleLbl.Size = UDim2.new(1, 0, 0, 16)
     titleLbl.BackgroundTransparency = 1
     titleLbl.Text = "⚡ STUNNED ⚡"
-    titleLbl.TextColor3 = Color3.fromRGB(255, 230, 120)
+    titleLbl.TextColor3 = DIAMOND_LIGHT
     titleLbl.TextStrokeTransparency = 0
     titleLbl.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
     titleLbl.TextSize = 14
@@ -4722,21 +5053,21 @@ local function CreateStunBillboard(char)
     barBg.Name = "BarBg"
     barBg.Size = UDim2.new(1, 0, 0, 10)
     barBg.Position = UDim2.new(0, 0, 0, 20)
-    barBg.BackgroundColor3 = Color3.fromRGB(30, 20, 5)
+    barBg.BackgroundColor3 = Color3.fromRGB(10, 25, 60)
     barBg.BorderSizePixel = 0
     barBg.Parent = container
     local bgCorner = Instance.new("UICorner")
     bgCorner.CornerRadius = UDim.new(1, 0)
     bgCorner.Parent = barBg
     local bgStroke = Instance.new("UIStroke")
-    bgStroke.Color = Color3.fromRGB(255, 210, 80)
+    bgStroke.Color = DIAMOND_BLUE
     bgStroke.Thickness = 1.5
     bgStroke.Parent = barBg
 
     local barFill = Instance.new("Frame")
     barFill.Name = "BarFill"
     barFill.Size = UDim2.new(1, 0, 1, 0)
-    barFill.BackgroundColor3 = Color3.fromRGB(255, 210, 80)
+    barFill.BackgroundColor3 = DIAMOND_BLUE
     barFill.BorderSizePixel = 0
     barFill.Parent = barBg
     local fillCorner = Instance.new("UICorner")
@@ -4744,9 +5075,9 @@ local function CreateStunBillboard(char)
     fillCorner.Parent = barFill
     local fillGrad = Instance.new("UIGradient")
     fillGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 120)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 180, 60)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 70, 100)),
+        ColorSequenceKeypoint.new(0, DIAMOND_LIGHT),
+        ColorSequenceKeypoint.new(0.5, DIAMOND_BLUE),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 80, 100)),
     })
     fillGrad.Parent = barFill
 
@@ -4756,7 +5087,7 @@ local function CreateStunBillboard(char)
     timerLbl.Position = UDim2.new(0, 0, 0, 32)
     timerLbl.BackgroundTransparency = 1
     timerLbl.Text = "0.0s"
-    timerLbl.TextColor3 = Color3.fromRGB(255, 230, 160)
+    timerLbl.TextColor3 = DIAMOND_LIGHT
     timerLbl.TextStrokeTransparency = 0.3
     timerLbl.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
     timerLbl.TextSize = 11
@@ -5076,11 +5407,12 @@ RunService.RenderStepped:Connect(function()
 end)
 
 print("✅ [13/15] Loop Fitur Aktif + Stun Indicator + Camera Fix + Anti-Ilang Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 14/15 : ANTI-ILANG EXTENDED + RECOVERY + AUTO REAPPLY
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- ============ LOADING CLEANUP ============
 task.delay(3, function()
     pcall(function()
         local oldLoading = PG:FindFirstChild("OneWLoading")
@@ -5088,6 +5420,7 @@ task.delay(3, function()
     end)
 end)
 
+-- ============ RECOVERY GUI ============
 function RecreateAllGUI()
     local coreGui = game:GetService("CoreGui")
 
@@ -5157,6 +5490,7 @@ LP.CharacterAdded:Connect(function(char)
     pcall(RecreateAllGUI)
 end)
 
+-- ============ AUTO REAPPLY SETELAH RESPAWN ============
 LP.CharacterAdded:Connect(function(char)
     task.wait(1.5)
 
@@ -5191,6 +5525,7 @@ LP.CharacterAdded:Connect(function(char)
     Aimlock.Holding = false
 end)
 
+-- ============ AUTO REAPPLY SKY + FIRE ============
 task.spawn(function()
     while task.wait(8) do
         if S.SkyId and S.SkyId ~= "Default" then
@@ -5214,6 +5549,7 @@ task.spawn(function()
     end
 end)
 
+-- ============ GRAFIK ULTRA AUTO REAPPLY ============
 task.spawn(function()
     while task.wait(5) do
         if GraphicState.SoftCinematic then
@@ -5243,6 +5579,7 @@ LP.CharacterAdded:Connect(function(char)
     end
 end)
 
+-- ============ BOMBAX AUTO RECOVERY ============
 task.spawn(function()
     while task.wait(2) do
         if Bombax.Music and not Bombax.Music.Parent then
@@ -5258,6 +5595,7 @@ task.spawn(function()
     end
 end)
 
+-- ============ AUTO HOOK KILLER BARU ============
 Players.PlayerAdded:Connect(function(p)
     p.CharacterAdded:Connect(function(c)
         task.wait(1)
@@ -5279,6 +5617,7 @@ task.spawn(function()
     end
 end)
 
+-- ============ SAFE CALL ============
 function safeCall(fn, ...)
     local args = {...}
     local ok, err = pcall(function()
@@ -5292,6 +5631,7 @@ end
 
 _G.Roooor_safeCall = safeCall
 
+-- ============ UNLOAD FUNCTION ============
 function UnloadAll()
     print("[Hub] Unloading...")
     pcall(function()
@@ -5334,51 +5674,64 @@ end
 _G.Roooor_Unload = UnloadAll
 
 print("✅ [14/15] Anti-Ilang Extended + Recovery + Auto Reapply Loaded")
-
--- =========================================================
+print("   Theme: DIAMOND BLUE")-- =========================================================
 -- SECTION 15/15 : AUTO-ON + PRINT FINAL
+-- THEME: DIAMOND BLUE
 -- =========================================================
 
+-- ============ AUTO-ON SETELAH 2 DETIK ============
 task.spawn(function()
     task.wait(2)
 
+    -- ESP Survivor
     ESP.Survivor = true
     _G.ToggleStates["ESP Survivor"] = true
 
+    -- ESP Killer
     ESP.Killer = true
     _G.ToggleStates["ESP Killer"] = true
 
+    -- ESP Generator
     ESP.Generator = true
     _G.ToggleStates["ESP Generator"] = true
 
+    -- Generator Mode = Bar
     S.ESPGenMode = "Bar"
     _G.DropdownStates["Generator Mode"] = 2
 
+    -- Bar Width
     S.ESPGenBarSize = 64
     _G.SliderStates["Bar Width"] = 64
 
+    -- Bar Height
     S.ESPGenBarHeight = 8
     _G.SliderStates["Bar Height"] = 8
 
+    -- Text Size TERKECIL (6)
     S.ESPGenBarTextSize = 6
     _G.SliderStates["Text Size"] = 6
 
+    -- Nama Mode
     S.ESPNameMode = "Galaxy"
     _G.DropdownStates["Name Mode"] = 2
 
+    -- Name Size TERKECIL
     S.ESPNameSize = 8
     _G.SliderStates["Name Size"] = 8
 
+    -- Korblox ON
     S.Korblox = true
     _G.ToggleStates["Enable Korblox"] = true
     task.wait(0.3)
     pcall(function() applyKorblox(true, "Pencil", 0.80, 1) end)
 
+    -- Headless ON
     S.Headless = true
     _G.ToggleStates["Headless"] = true
     task.wait(0.3)
     pcall(function() applyHeadless(true) end)
 
+    -- Stun Indicator ON
     StunIndicator.Enabled = true
     _G.ToggleStates["Enable Stun Sound"] = true
 
@@ -5392,6 +5745,7 @@ task.spawn(function()
     print("[AUTO-ON] - Stun Indicator: ON")
 end)
 
+-- ============ BANNER LOADING SUCCESS (BIRU DIAMOND) ============
 task.spawn(function()
     task.wait(2.5)
     pcall(function()
@@ -5410,10 +5764,14 @@ task.spawn(function()
         bg2.BorderSizePixel = 0
         bg2.Parent = banner
         rnd(bg2, 12)
-        strk(bg2, C.GOLD, 2, 0.2)
+        strk(bg2, DIAMOND_BLUE, 2, 0.2)
 
         local grad = Instance.new("UIGradient")
-        grad.Color = ColorSequence.new(C.GOLD_DARK, C.GOLD, C.GOLD_LIGHT, C.GOLD, C.GOLD_DARK)
+        grad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 50, 120)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(80, 160, 240)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 50, 120)),
+        })
         grad.Rotation = 45
         grad.Parent = bg2
 
@@ -5422,9 +5780,11 @@ task.spawn(function()
         title.Position = UDim2.new(0, 0, 0, 10)
         title.BackgroundTransparency = 1
         title.Text = "ONE W LOADED"
-        title.TextColor3 = Color3.fromRGB(40, 30, 10)
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.TextSize = 16
         title.Font = Enum.Font.GothamBlack
+        title.TextStrokeTransparency = 0.5
+        title.TextStrokeColor3 = Color3.fromRGB(20, 60, 120)
         title.Parent = bg2
 
         local sub = Instance.new("TextLabel")
@@ -5432,7 +5792,7 @@ task.spawn(function()
         sub.Position = UDim2.new(0, 0, 0, 36)
         sub.BackgroundTransparency = 1
         sub.Text = "Klik tombol W atau RightShift buat buka menu"
-        sub.TextColor3 = Color3.fromRGB(60, 45, 15)
+        sub.TextColor3 = Color3.fromRGB(180, 230, 255)
         sub.TextSize = 10
         sub.Font = Enum.Font.GothamBold
         sub.Parent = bg2
@@ -5450,6 +5810,7 @@ task.spawn(function()
     end)
 end)
 
+-- ============ WELCOME NOTIFICATION ============
 task.delay(4, function()
     pcall(function()
         StarterGui:SetCore("SendNotification", {
@@ -5460,11 +5821,12 @@ task.delay(4, function()
     end)
 end)
 
+-- ============ PRINT FINAL ============
 task.wait(0.5)
 
 print("")
 print("==========================================")
-print("  ONE W - GOLD PREMIUM HUB v4")
+print("  ONE W - DIAMOND BLUE PREMIUM HUB v4")
 print("  SEMUA 15 SECTION LOADED")
 print("==========================================")
 print("  Keybind:")
@@ -5480,10 +5842,12 @@ print("    4. Fire       9. Aimbot")
 print("    5. Musik     10. Moonwalk")
 print("------------------------------------------")
 print("  FITUR BARU:")
-print("    - Tombol W pake gambar")
-print("    - Logo header pake gambar")
-print("    - Loading screen pake gambar")
+print("    - Tombol W pake gambar ID lu")
+print("    - Logo header pake gambar ID lu")
+print("    - Loading screen biru diamond + gambar")
+print("    - Background menu biru kinclong + shimmer")
 print("    - Stun Indicator + Suara")
+print("    - BOMBAX Music tema biru diamond")
 print("  MUSIC: " .. #Bombax.DaftarLagu .. " lagu")
 print("==========================================")
 print("")
