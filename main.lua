@@ -3859,30 +3859,24 @@ _G.Roooor_makeTab = makeTab
 
 print("✅ [8/15] Komponen UI Loaded")
 print("   Theme: DIAMOND BLUE")-- =========================================================
--- SECTION 9/15 : TAB SURVIVOR + TAB KILLER + HITBOX + CIRCLE
+-- SECTION 9/15 : TAB SURVIVOR + KILLER + HITBOX + CIRCLE
 -- =========================================================
 
 -- =========================================================
--- KILLER HITBOX SYSTEM (LOGIC)
+-- KILLER HITBOX SYSTEM
 -- =========================================================
 _G.HitboxEsp = _G.HitboxEsp or {
-    Enabled = false,
-    Size = 50,
-    ShowSurvivor = true,
-    ShowKiller = true,
+    Enabled = false, Size = 50,
+    ShowSurvivor = true, ShowKiller = true,
     ColorSurvivor = Color3.fromRGB(80, 240, 255),
     ColorKiller = Color3.fromRGB(255, 70, 100),
-    Transparency = 0.85,
-    ShowWireframe = true,
+    Transparency = 0.85, ShowWireframe = true,
 }
 
 _G.SpoofAttack = _G.SpoofAttack or {
-    Enabled = false,
-    SpoofDistance = 3,
-    OnlyWhenClose = false,
-    MaxRealDistance = 50,
-    AttackSpam = false,
-    AttackDelay = 0.15,
+    Enabled = false, SpoofDistance = 3,
+    OnlyWhenClose = false, MaxRealDistance = 50,
+    AttackSpam = false, AttackDelay = 0.15,
 }
 
 -- ============ HITBOX ESP LOGIC ============
@@ -3896,7 +3890,6 @@ local function CreateHitboxEsp(char, color)
         if d.wire then d.wire.Color = color end
         return
     end
-
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
 
@@ -3962,21 +3955,16 @@ end
 task.spawn(function()
     while task.wait(0.1) do
         local hitbox = _G.HitboxEsp
-
         if not hitbox.Enabled then
-            for char, _ in pairs(HitboxEspObjects) do
-                RemoveHitboxEsp(char)
-            end
+            for char, _ in pairs(HitboxEspObjects) do RemoveHitboxEsp(char) end
             continue
         end
-
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LP and p.Character then
                 local hum = p.Character:FindFirstChildOfClass("Humanoid")
                 if hum and hum.Health > 0 then
                     local isSurv = p.Team and p.Team.Name == "Survivors"
                     local isKill = p.Team and p.Team.Name == "Killer"
-
                     if (isSurv and hitbox.ShowSurvivor) or (isKill and hitbox.ShowKiller) then
                         local color = isSurv and hitbox.ColorSurvivor or hitbox.ColorKiller
                         CreateHitboxEsp(p.Character, color)
@@ -3988,7 +3976,6 @@ task.spawn(function()
                 end
             end
         end
-
         for char, d in pairs(HitboxEspObjects) do
             if char and char.Parent then
                 local hrp = char:FindFirstChild("HumanoidRootPart")
@@ -4015,24 +4002,17 @@ local OriginalNamecall = nil
 local function GetClosestSurvivor()
     local myRoot = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
     if not myRoot then return nil, math.huge end
-
-    local closest = nil
-    local shortest = math.huge
-
+    local closest, shortest = nil, math.huge
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LP and p.Character and p.Team and p.Team.Name == "Survivors" then
             local hum = p.Character:FindFirstChildOfClass("Humanoid")
             local hrp = p.Character:FindFirstChild("HumanoidRootPart")
             if hum and hrp and hum.Health > 0 then
                 local dist = (hrp.Position - myRoot.Position).Magnitude
-                if dist < shortest then
-                    shortest = dist
-                    closest = hrp
-                end
+                if dist < shortest then shortest = dist; closest = hrp end
             end
         end
     end
-
     return closest, shortest
 end
 
@@ -4042,30 +4022,24 @@ local function EnableSpoofHook()
         warn("[Spoof] Executor gak support hookmetamethod")
         return
     end
-
     SpoofHooked = true
     local mt = getrawmetatable(game)
     if not mt then SpoofHooked = false; return end
-
     OriginalNamecall = mt.__namecall
     local oldNamecall = mt.__namecall
-
     setreadonly(mt, false)
     mt.__namecall = newcclosure(function(self, ...)
         local method = getnamecallmethod()
-
         if method == "FireServer" and _G.SpoofAttack.Enabled then
             local name = self.Name
             if name == "BasicAttack" or name == "Attack" or name == "Slash"
                 or name == "HitEvent" or name == "AttackEvent" then
-
                 local target, dist = GetClosestSurvivor()
                 if target then
                     local spoof = _G.SpoofAttack
                     if not spoof.OnlyWhenClose or dist <= spoof.MaxRealDistance then
                         local args = {...}
                         local spoofedPos = target.Position + Vector3.new(0, 0, spoof.SpoofDistance)
-
                         pcall(function()
                             if type(args[1]) == "Vector3" then
                                 args[1] = spoofedPos
@@ -4075,13 +4049,11 @@ local function EnableSpoofHook()
                                 table.insert(args, 1, spoofedPos)
                             end
                         end)
-
                         return oldNamecall(self, table.unpack(args))
                     end
                 end
             end
         end
-
         return oldNamecall(self, ...)
     end)
     setreadonly(mt, true)
@@ -4110,12 +4082,10 @@ task.spawn(function()
     end
 end)
 
--- Attack spam loop
 task.spawn(function()
     while task.wait(0.05) do
         local spoof = _G.SpoofAttack
         if not spoof.Enabled or not spoof.AttackSpam then continue end
-
         local target = GetClosestSurvivor()
         if target then
             pcall(function()
@@ -4134,119 +4104,7 @@ task.spawn(function()
 end)
 
 -- =========================================================
--- ESP CIRCLE PARRY (NEW - TIPIS, DI TANAH)
--- =========================================================
-_G.AP_Circle = _G.AP_Circle or {
-    Enabled = false,
-    Radius = 13,
-    Thickness = 0.08,
-    ColorSafe = Color3.fromRGB(0, 255, 100),
-    ColorDanger = Color3.fromRGB(255, 50, 50),
-    YOffset = 0.1,
-    Segments = 60,
-}
-
-local AP_Circle = _G.AP_Circle
-local circleLines = {}
-
-local function CreateCircleDrawings()
-    if circleLines and #circleLines > 0 then
-        for _, line in pairs(circleLines) do
-            if line then line:Remove() end
-        end
-        circleLines = {}
-    end
-    for i = 1, AP_Circle.Segments do
-        local ok, line = pcall(function() return Drawing.new("Line") end)
-        if ok and line then
-            line.Visible = false
-            line.Thickness = AP_Circle.Thickness
-            line.Transparency = 0
-            table.insert(circleLines, line)
-        end
-    end
-end
-
-local function UpdateCircleDrawings()
-    local myRoot = getRoot()
-    if not myRoot then return end
-    local cam = workspace.CurrentCamera
-    if not cam then return end
-
-    local myPos = myRoot.Position
-    local myY = myPos.Y + AP_Circle.YOffset
-
-    local killerInside = false
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LP and p.Character and p.Team and p.Team.Name == "Killer" then
-            local eRoot = p.Character:FindFirstChild("HumanoidRootPart")
-            if eRoot then
-                local dist = (eRoot.Position - myPos).Magnitude
-                if dist <= AP_Circle.Radius then
-                    killerInside = true
-                    break
-                end
-            end
-        end
-    end
-
-    local color = killerInside and AP_Circle.ColorDanger or AP_Circle.ColorSafe
-
-    local points = {}
-    for i = 1, AP_Circle.Segments do
-        local angle = (i / AP_Circle.Segments) * math.pi * 2
-        local worldPos = Vector3.new(
-            myPos.X + math.cos(angle) * AP_Circle.Radius,
-            myY,
-            myPos.Z + math.sin(angle) * AP_Circle.Radius
-        )
-        local screenPos, onScreen = cam:WorldToViewportPoint(worldPos)
-        table.insert(points, {pos = screenPos, onScreen = onScreen})
-    end
-
-    for i = 1, AP_Circle.Segments do
-        local p1 = points[i]
-        local p2 = points[(i % AP_Circle.Segments) + 1]
-        local line = circleLines[i]
-
-        if line then
-            if p1.onScreen and p2.onScreen then
-                line.Visible = true
-                line.From = Vector2.new(p1.pos.X, p1.pos.Y)
-                line.To = Vector2.new(p2.pos.X, p2.pos.Y)
-                line.Color = color
-                line.Thickness = AP_Circle.Thickness
-            else
-                line.Visible = false
-            end
-        end
-    end
-end
-
-task.spawn(function()
-    CreateCircleDrawings()
-    while task.wait(0.01) do
-        if not AP_Circle.Enabled then
-            for _, line in pairs(circleLines) do
-                if line then line.Visible = false end
-            end
-            continue
-        end
-        UpdateCircleDrawings()
-    end
-end)
-
--- Sync radius dengan AutoParry
-task.spawn(function()
-    while task.wait(0.5) do
-        if AutoParry and AutoParry.ParryDistance then
-            AP_Circle.Radius = AutoParry.ParryDistance
-        end
-    end
-end)
-
--- =========================================================
--- TAB 1: SURVIVOR
+-- TAB 1: SURVIVOR (dengan ESP Circle Parry di dalamnya)
 -- =========================================================
 makeTab("Survivor", "🏃", 1, function()
     sec("Auto Parry", "🛡️")
@@ -4262,7 +4120,7 @@ makeTab("Survivor", "🏃", 1, function()
     end)
     sl("Parry Radius", 5, 40, 13, function(v)
         AutoParry.ParryDistance = v
-        _G.AP_Circle.Radius = v
+        if AP_ESPCircle then AP_ESPCircle.Radius = v end
     end)
     sl("Face Sensitivity", -1, 1, -1, function(v)
         AutoParry.FaceSensitivity = v
@@ -4276,28 +4134,44 @@ makeTab("Survivor", "🏃", 1, function()
     sl("Parry Lock", 0.1, 0.6, 0.3, function(v)
         AutoParry.ParryLockTime = v
     end)
+    btn("Reset Parry Counter", function()
+        AP_parryCount = 0
+    end)
 
     sec("ESP Circle Parry", "⭕")
     tog("Show Circle", false, function(s)
-        _G.AP_Circle.Enabled = s
+        if AP_ESPCircle then
+            AP_ESPCircle.Enabled = s
+            if s then
+                if AP_CreateCircle then pcall(AP_CreateCircle) end
+            else
+                if AP_ClearCircle then pcall(AP_ClearCircle) end
+            end
+        end
     end)
     sl("Circle Thickness", 0.01, 0.5, 0.08, function(v)
-        _G.AP_Circle.Thickness = v
+        if AP_ESPCircle then
+            AP_ESPCircle.Thickness = v
+            -- Rebuild
+            if AP_ClearCircle then pcall(AP_ClearCircle) end
+            if AP_ESPCircle.Enabled and AP_CreateCircle then pcall(AP_CreateCircle) end
+        end
     end)
-    sl("Circle Y Offset", -5, 15, 0.1, function(v)
-        _G.AP_Circle.YOffset = v
+    sl("Circle Y Offset", -10, 5, -2.5, function(v)
+        if AP_ESPCircle then AP_ESPCircle.YOffset = v end
     end)
-    sl("Circle Segments", 20, 120, 60, function(v)
-        _G.AP_Circle.Segments = v
+    sl("Circle Segments", 16, 80, 36, function(v)
+        if AP_ESPCircle then
+            AP_ESPCircle.Segments = v
+            if AP_ClearCircle then pcall(AP_ClearCircle) end
+            if AP_ESPCircle.Enabled and AP_CreateCircle then pcall(AP_CreateCircle) end
+        end
     end)
     cpk("Circle Safe Color", Color3.fromRGB(0, 255, 100), function(c)
-        _G.AP_Circle.ColorSafe = c
+        if AP_ESPCircle then AP_ESPCircle.ColorNormal = c end
     end)
     cpk("Circle Danger Color", Color3.fromRGB(255, 50, 50), function(c)
-        _G.AP_Circle.ColorDanger = c
-    end)
-    btn("Reset Parry Counter", function()
-        AP_parryCount = 0
+        if AP_ESPCircle then AP_ESPCircle.ColorDanger = c end
     end)
 
     sec("Auto Skill Check", "⚡")
@@ -4342,30 +4216,20 @@ makeTab("Survivor", "🏃", 1, function()
     end)
 
     sec("Auto Escape", "🚪")
-    tog("Enable Auto Escape", false, function(s)
-        S.AutoEscapeGate = s
-    end)
-    tog("Killer Deket", true, function(s)
-        S.AutoEscapeUseKillerCheck = s
-    end)
-    tog("Generator Cukup", true, function(s)
-        S.AutoEscapeUseGenCheck = s
-    end)
-    sl("Killer Range", 10, 150, 50, function(v)
-        S.AutoEscapeRange = v
-    end)
+    tog("Enable Auto Escape", false, function(s) S.AutoEscapeGate = s end)
+    tog("Killer Deket", true, function(s) S.AutoEscapeUseKillerCheck = s end)
+    tog("Generator Cukup", true, function(s) S.AutoEscapeUseGenCheck = s end)
+    sl("Killer Range", 10, 150, 50, function(v) S.AutoEscapeRange = v end)
 
     sec("Support", "💊")
     tog("Instant Interact", false, function(s) S.InstantInteract = s end)
 
     sec("Teleport", "🌀")
-    btn("TP Finish Line", function()
-        teleportToFinishLine()
-    end)
+    btn("TP Finish Line", function() teleportToFinishLine() end)
 end, nil)
 
 -- =========================================================
--- TAB 2: KILLER (dengan Hitbox ESP + Spoof Attack)
+-- TAB 2: KILLER (Hitbox + Spoof)
 -- =========================================================
 makeTab("Killer", "🔪", 2, function()
     sec("Auto Attack", "⚔️")
@@ -4373,44 +4237,20 @@ makeTab("Killer", "🔪", 2, function()
     sl("Attack Delay", 0.1, 1, 0.35, function(v) S.Killer_AtkDelay = v end)
 
     sec("Hitbox ESP", "📦")
-    tog("Enable Hitbox ESP", false, function(s)
-        _G.HitboxEsp.Enabled = s
-    end)
-    sl("Hitbox Size", 10, 400, 50, function(v)
-        _G.HitboxEsp.Size = v
-    end)
-    sl("Hitbox Transparency", 0.1, 1, 0.85, function(v)
-        _G.HitboxEsp.Transparency = v
-    end)
-    tog("Show Survivor Hitbox", true, function(s)
-        _G.HitboxEsp.ShowSurvivor = s
-    end)
-    tog("Show Killer Hitbox", true, function(s)
-        _G.HitboxEsp.ShowKiller = s
-    end)
-    tog("Show Wireframe", true, function(s)
-        _G.HitboxEsp.ShowWireframe = s
-    end)
+    tog("Enable Hitbox ESP", false, function(s) _G.HitboxEsp.Enabled = s end)
+    sl("Hitbox Size", 10, 400, 50, function(v) _G.HitboxEsp.Size = v end)
+    sl("Hitbox Transparency", 0.1, 1, 0.85, function(v) _G.HitboxEsp.Transparency = v end)
+    tog("Show Survivor Hitbox", true, function(s) _G.HitboxEsp.ShowSurvivor = s end)
+    tog("Show Killer Hitbox", true, function(s) _G.HitboxEsp.ShowKiller = s end)
+    tog("Show Wireframe", true, function(s) _G.HitboxEsp.ShowWireframe = s end)
 
     sec("Spoof Attack", "⚡")
-    tog("Enable Spoof Attack", false, function(s)
-        _G.SpoofAttack.Enabled = s
-    end)
-    sl("Spoof Distance", 0, 10, 3, function(v)
-        _G.SpoofAttack.SpoofDistance = v
-    end)
-    tog("Only When Close", false, function(s)
-        _G.SpoofAttack.OnlyWhenClose = s
-    end)
-    sl("Max Real Distance", 10, 200, 50, function(v)
-        _G.SpoofAttack.MaxRealDistance = v
-    end)
-    tog("Attack Spam (Auto Attack)", false, function(s)
-        _G.SpoofAttack.AttackSpam = s
-    end)
-    sl("Attack Delay", 0.05, 0.5, 0.15, function(v)
-        _G.SpoofAttack.AttackDelay = v
-    end)
+    tog("Enable Spoof Attack", false, function(s) _G.SpoofAttack.Enabled = s end)
+    sl("Spoof Distance", 0, 10, 3, function(v) _G.SpoofAttack.SpoofDistance = v end)
+    tog("Only When Close", false, function(s) _G.SpoofAttack.OnlyWhenClose = s end)
+    sl("Max Real Distance", 10, 200, 50, function(v) _G.SpoofAttack.MaxRealDistance = v end)
+    tog("Attack Spam (Auto Attack)", false, function(s) _G.SpoofAttack.AttackSpam = s end)
+    sl("Attack Delay", 0.05, 0.5, 0.15, function(v) _G.SpoofAttack.AttackDelay = v end)
 
     sec("Kill All", "💀")
     tog("Killer Kill All", false, function(s) S.Killer_KillAll = s end)
@@ -4440,7 +4280,7 @@ end, function()
     end, rightScroll)
 end)
 
-print("✅ [9/15] Tab Survivor + Tab Killer + Hitbox + Circle Loaded")-- =========================================================
+print("✅ [9/15] Tab Survivor + Killer + Hitbox + Circle Loaded")-- =========================================================
 -- SECTION 10/15 : TAB ESP + FIRE + MUSIK
 -- THEME: DIAMOND BLUE
 -- =========================================================
